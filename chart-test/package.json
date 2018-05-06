@@ -1,0 +1,13 @@
+{
+    "name": "chart-test",
+    "dependencies": {
+        "ejs": "^2.6.1",
+        "express": "^4.16.3",
+        "http": "0.0.0",
+        "path": "^0.12.7",
+        "socket.io": "^2.1.0"
+    },
+    "scripts": {
+        "start": "node app.js"
+    }
+}

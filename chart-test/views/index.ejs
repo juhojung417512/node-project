@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <h1>Socket.io Chart Sample</h1>
+        <div id="chartDiv">
+            <canvas id="lineCanvas" width="384" height="210"></canvas>
+        </div>
+        <script>
+            var socket = io();
+            var randomList = [0,0,0,0,0,0,0,0,0,0];
+            setInterval(function(){
+                socket.emit("random",{
+                    randomCount : 10
+                });
+            },3000);
+            socket.on("random-value",function(data){
+                lineChart(data.valueList);
+            });
+
+            function lineChart(randomList){
+                var data = {
+                    labels: ["BTC","KRW","USDT","XRP","SRN","BCC","XVG","ETH","ETC","ADA"],
+                    datasets: [
+                        {
+                            label: "",
+                            fillColor: "rgba(151,187,205,0.2)",
+                            strokeColor: "rgba(151,187,205,1)",
+                            pointColor: "rgba(151,187,205,1)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(151,187,205,1)",
+                            data: randomList
+                        }
+                        // {
+                        //     label: "",
+                        //     fillColor: "rgba(220,220,220,0.2)",
+                        //     strokeColor: "rgba(220,220,220,1)",
+                        //     pointColor: "rgba(220,220,220,1)",
+                        //     pointStrokeColor: "#fff",
+                        //     pointHighlightFill: "#fff",
+                        //     pointHighlightStroke: "rgba(220,220,220,1)",
+                        //     data: randomList
+                        // }
+                    ]
+                };
+                var canvas = $("#lineCanvas")[0].getContext("2d");
+                var options = { 
+                    scaleShowGridLines : true, //차트 눈금 표시 여부
+                    scaleGridLineColor : "rgba(0,0,0,0.05)", //차트 눈금 색 설정
+                    scaleGridLineWidth : 1 // 차트 눈금 굵기
+                };
+                var lineChart = new Chart(canvas).Line(data, options);
+            }
+        </script>
+    </body>
+    
+</html>
