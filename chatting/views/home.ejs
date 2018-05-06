@@ -1,0 +1,112 @@
+<% include _header %>
+<style>
+    #chatLogs{
+        padding:10px;
+        border:1px solid #777;
+        border-radius:10px;
+    }
+    .me{
+        width:100%;
+        text-align: right;
+    }
+    .you{
+        width:100%;
+        text-align: left;
+    }
+
+    .btn-primary{
+        font-weight: bold;
+    }
+</style>
+<div id="loginDiv">
+    <input id="username" type="text" placeholder="User Name" 
+    class = "form-control"required>
+    <input id="userid" type="text" placeholder="User Id" 
+    class = "form-control"required>
+    <input type="submit" id="login" class="btn btn-primary btn-block">
+</div>
+
+<div id="roomDiv">
+    <input type="text" id="room_name" required>
+    <input type="submit" id="room-create" value="room create!" class="btn btn-primary">
+    
+    <h2><strong>Room List</strong></h2>
+    <div id ="roomList" class="form-group"></div>
+</div>
+<div id="chatDiv">
+    <div class="container">
+        <h1> socekt io chatting</h1>
+        <div class="form-group">
+            <label for="msgForm">Message: </label>
+            <input type="text" class="form-control" id="msgForm">
+        </div>
+        <button type="submit" id="chat-enter" class="btn btn-primary">Send</button>
+        <div id="chatLogs"></div>
+    </div>
+</div>
+<script>
+    var socket = io();
+    $("#loginDiv").show();
+    $("#roomDiv").hide();
+    $("#chatDiv").hide();
+
+    $("#login").click(function(e){
+        console.log("asdas");
+        socket.emit("login",{
+            username: $("#username").val(),
+            userid: $("#userid").val()
+        });
+        $("#loginDiv").hide();
+        $("#roomDiv").show();
+        socket.emit("room-list",true);
+    });
+
+    var roomlistdiv = $("#roomList");
+    var roomlist;
+    socket.on("room-list",function(data){
+        roomlist = data.rooms;
+        for(var room in data.rooms){
+            roomlistdiv.append("<input type="+ "submit"+ " id=" + room +  " value="+room+"room select!"+" class="+ "btn btn-primary"+">");
+        }
+    });
+
+    $("#room-create").click(function(e){
+        for(var room in roomlist){
+            if($("#room_name").val() == room){
+                alert("이미 있는 방의 이름 사용은 불가능합니다.")
+                return;
+            }
+        }
+        socket.emit("room-create",{roomid:$("#room_name").val()});
+        $("#roomDiv").hide();
+        $("#chatDiv").show();
+    });
+    for(var room in roomlist){
+        $("#roomList "+"#"+room).click(function(e){
+            socket.emit("room-create",{roomid:room});
+            $("#roomDiv").hide();
+            $("#chatDiv").show();
+        });
+    }
+    var chatLogs = $("#chatLogs");
+    
+    socket.on("login",function(data){
+        chatLogs.append("<div><strong>" + data + "</strong> has joined</div>");
+    });
+    
+    socket.on("chat",function(data){
+        if( myname == data.from.name){
+            chatLogs.append("<div class='me'>" + data.msg + " from : <strong>"+ data.from.name + "</strong></div>");
+        }else{
+            chatLogs.append("<div class='you'>" + data.msg + " from : <strong>"+ data.from.name + "</strong></div>");
+        }
+    })
+
+    $("#chatDiv #chat-enter").click(function(e){
+        e.preventDefault();
+
+        socket.emit("chat", {msg: $("#msgForm").val()});
+        $("#msgForm").val("");
+    });
+</script>
+<% include _footer %>

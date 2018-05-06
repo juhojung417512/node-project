@@ -1,0 +1,35 @@
+<% include _header.ejs %>
+<style>
+    h1{
+        color: black;
+        font-weight: bold;
+    }
+</style>
+<h1>Login for chatting!</h1> &nbsp;
+
+<form action="/room-list" method="get">
+    <input id="username" type="text" placeholder="User Name" 
+    class = "form-control"required>
+    <input id="userid" type="text" placeholder="User Id" 
+    class = "form-control"required>
+    <input type="submit" id="login" class="btn btn-primary btn-block">
+</form>
+<script>
+    var socket = io();
+
+    if(getCookie("username") || getCookie("userid")) {
+        xml = new XMLHttpRequest();
+        xml.open("get","/room-list",true);
+    }
+    
+    $("#login").click(function(e){
+        socket.emit("login",{
+            username: $("#username").val(),
+            userid: $("#userid").val()
+        });
+        setCookie("username",$("#username").val(),1);
+        setCookie("userid",$("#userid").val(),1);
+    });
+    
+</script>
+<% include _footer.ejs %>

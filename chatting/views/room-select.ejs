@@ -1,0 +1,65 @@
+<% include _header.ejs %>
+<style>
+    strong{
+        font-size: 20px;
+    }
+    h3{
+        border-bottom: 1px solid red;
+    }
+</style>
+<h1>Room !</h1>
+<form action="/room-create" method="POST">
+    <input type="text" id="room_name" placeholder="ROOM NAME" required>
+    <input type="submit" id="create" value="room create!" class="btn btn-primary">
+</form>
+
+<form action="/room-select" method="POST" id="select">
+    <h2><strong>Room List</strong></h2>
+    <div id ="roomList" class="form-group"></div>
+</form>
+
+<script>
+    var socket = io();
+    var roomlistdiv = $("#roomList");
+    var roomlist;
+
+    socket.emit("room-list",{
+        userid: getCookie("userid"),
+        username: getCookie("username")
+    });
+
+    socket.on("room-list",function(data){
+        roomlist = data.rooms;
+        console.log(data.rooms);
+        for(room in data.rooms) {
+            roomlistdiv.append("<h3>" + data.rooms[room] +"</h3>")
+            roomlistdiv.append("<input type="+ "submit"+ " id=" + data.rooms[room] +  " value=room select!"+" class="+ "btn btn-primary"+">&npsp;");
+        }
+    });
+
+    $("#create").click(function(e){
+        for(var room in roomlist){
+            if($("#room_name").val() == room){
+                alert("이미 있는 방의 이름 사용은 불가능합니다.")
+                return;
+            }
+        }
+        setCookie("roomid",$("#room_name").val(),1);
+        socket.emit("room-create",{
+            roomid:$("#room_name").val(),
+            userid: getCookie("userid"),
+            username: getCookie("username")
+        });
+    });
+    for(var room in roomlist){
+        $("#"+roomlist[room]).click(function(e){
+            setCookie("roomid",roomlist[room],1);
+            socket.emit("room-create",{
+                roomid:roomlist[room],
+                userid: getCookie("userid"),
+                username: getCookie("username")
+            });
+        });
+    }
+</script>
+<% include _footer.ejs %>

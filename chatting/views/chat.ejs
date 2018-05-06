@@ -1,0 +1,60 @@
+<% include _header %>
+<style>
+    #chatLogs{
+        padding:10px;
+        border:1px solid #777;
+        border-radius:10px;
+    }
+    .me{
+        width:100%;
+        text-align: right;
+    }
+    .you{
+        width:100%;
+        text-align: left;
+    }
+
+    .btn-primary{
+        font-weight: bold;
+    }
+</style>
+<div class="container">
+    <h1> socekt io chatting</h1>
+    <div id="roomName"></div>
+    <form class="form-inline">
+        <div class="form-group">
+            <label for="msgForm">Message: </label>
+            <input type="text" class="form-control" id="msgForm">
+        </div>
+        <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+    <div id="chatLogs"></div>
+</div>
+<script>
+    var socket = io();
+    var chatLogs = $("#chatLogs");
+    $("#roomName").append("<h2>Room Name : "+getCookie("roomid")+ "</h2>");
+    socket.on("login",function(data){
+        chatLogs.append("<div><strong>" + data + "</strong> has joined</div>");
+    });
+    var myname = getCookie("username");
+    socket.on("chat",function(data){
+        if( myname == data.from.name){
+            chatLogs.append("<div class='me'>" + data.msg + " from : <strong>"+ data.from.name + "</strong></div>");
+        }else{
+            chatLogs.append("<div class='you'>" + data.msg + " from : <strong>"+ data.from.name + "</strong></div>");
+        }
+    })
+
+    $("form").submit(function(e){
+        e.preventDefault();
+
+        socket.emit("chat", {
+            msg: $("#msgForm").val(),
+            userid: getCookie("userid"),
+            username: getCookie("username")
+        });
+        $("#msgForm").val("");
+    });
+</script>
+<% include _footer %>
