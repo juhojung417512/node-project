@@ -13,19 +13,23 @@
         </div>
         <script>
             var socket = io();
-            var randomList = [0,0,0,0,0,0,0,0,0,0];
+            var labelsList = [];
+            var dataList = [];
+
             setInterval(function(){
-                socket.emit("random",{
-                    randomCount : 10
-                });
+                socket.emit("random",{});
             },3000);
+            
             socket.on("random-value",function(data){
-                lineChart(data.valueList);
+                var date = new Date();
+                labelsList.push(date.getMinutes()+":"+date.getSeconds())
+                dataList.push(data.value);
+                lineChart();
             });
 
-            function lineChart(randomList){
+            function lineChart(){
                 var data = {
-                    labels: ["BTC","KRW","USDT","XRP","SRN","BCC","XVG","ETH","ETC","ADA"],
+                    labels: labelsList,
                     datasets: [
                         {
                             label: "",
@@ -35,7 +39,7 @@
                             pointStrokeColor: "#fff",
                             pointHighlightFill: "#fff",
                             pointHighlightStroke: "rgba(151,187,205,1)",
-                            data: randomList
+                            data: dataList
                         }
                         // {
                         //     label: "",
@@ -49,13 +53,15 @@
                         // }
                     ]
                 };
+
                 var canvas = $("#lineCanvas")[0].getContext("2d");
                 var options = { 
                     scaleShowGridLines : true, //차트 눈금 표시 여부
                     scaleGridLineColor : "rgba(0,0,0,0.05)", //차트 눈금 색 설정
                     scaleGridLineWidth : 1 // 차트 눈금 굵기
                 };
-                var lineChart = new Chart(canvas).Line(data, options);
+
+                var chart = new Chart(canvas).Line(data, options);
             }
         </script>
     </body>

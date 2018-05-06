@@ -14,7 +14,7 @@ var io = require("socket.io")(server);
 io.on("connection",function(socket){
     socket.on("random",function(data){
         socket.emit("random-value",{
-            valueList: randomInteger(data.randomCount)
+            value: randomInteger()
         });
         console.log("random value emit!");        
     });        
@@ -24,11 +24,6 @@ server.listen(3000,function(){
     console.log("app started on port 3000");
 })
 
-function randomInteger(randomCount){
-    var randomList = []
-    for(var i=0;i<randomCount;i++){
-        randomList.push(Math.floor((Math.random()*MAX)));
-    }
-    
-    return randomList;
+function randomInteger(){    
+    return Math.floor((Math.random()*MAX));
 }
