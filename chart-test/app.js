@@ -1,6 +1,6 @@
 var app = require("express")();
 var path = require("path");
-var mysql = requrie("mysql");
+var mysql = require("mysql");
 var MAX = 100;
 
 app.set("views",path.resolve(__dirname,"views"))
@@ -13,7 +13,7 @@ app.get("/",function(req,res){
 //db
 var connection = mysql.createConnection({
     host: "54.250.2.129",
-    user: "ubuntu",
+    user: "root",
     password: "ubuntu",
     port: 3306,
     database: "test_db"
