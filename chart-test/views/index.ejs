@@ -7,9 +7,30 @@
         <meta charset="utf-8">
     </head>
     <body>
+        <style>
+            h1{
+                color: black;
+            }
+            .chartDiv{
+                position: relative;
+            }
+            .chartDiv > canvs{
+                position: absolute;
+                left:0;
+                top: 100px;
+                pointer-events: none;
+            }
+            .chartArea{
+                width:600px;
+                overflow-x: scroll;
+            }
+        </style>
         <h1>Socket.io Chart Sample</h1>
         <div id="chartDiv">
-            <canvas id="lineCanvas" width="384" height="210"></canvas>
+            <div class="chartArea">
+                <canvas id="lineCanvas" width="384" height="210"></canvas>
+            </div>
+            <!-- <canvas id="chartAxis" height="300" width="0"></canvas> -->
         </div>
         <script>
             var socket = io();
@@ -54,14 +75,21 @@
                     ]
                 };
 
-                var canvas = $("#lineCanvas")[0].getContext("2d");
-                var options = { 
+                var ctx = $("#lineCanvas")[0].getContext("2d");
+
+                var chart = new Chart(ctx).Line(data, { 
                     scaleShowGridLines : true, //차트 눈금 표시 여부
                     scaleGridLineColor : "rgba(0,0,0,0.05)", //차트 눈금 색 설정
-                    scaleGridLineWidth : 1 // 차트 눈금 굵기
-                };
-
-                var chart = new Chart(canvas).Line(data, options);
+                    scaleGridLineWidth : 1// 차트 눈금 굵기
+                    // onAnimationComplete: function(){
+                    //     var sourceCanvas = this.chart.ctx.canvas;
+                    //     var copywidth = this.scale.xscalePaddingLeft - 5;
+                    //     var copyheight =  this.scale.endpoint + 5;
+                    //     var targetctx = $("#chartAxis")[0].getContext("2d");
+                    //     targetctx.canvas.width = copywidth;
+                    //     targetctx.drawImage(sourceCanvas,0,0,copywidth,copyheight,0,0,copywidth,copyheight);
+                    // }
+                });
             }
         </script>
     </body>
