@@ -1,0 +1,10 @@
+<% include _header.ejs %>
+<h1>회원가입 페이지</h1>
+<form action="/signup" method="post">
+    <input type="text" name="_id" placeholder="Your ID" required>
+    <input type="text" name="_pw" placeholder="Your PW" required>
+    <input type="text" name="_name" placeholder="Your Name" required>
+    <input type="submit" value="signup">
+</form>
+
+<% include _footer.ejs %>
