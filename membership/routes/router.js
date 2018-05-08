@@ -9,7 +9,6 @@ router.use(function(req,res,next){
 });
 
 router.get("/",function(req,res){
-    console.log(req.session.user_id);
     if(req.session.user_id){
         userFunc.login(req.session.user_id,req.session.pw,function(result){
             if("err" in result){
@@ -69,7 +68,6 @@ router.post("/signup",function(req,res){
 router.get("/logout",function(req,res){
     req.session.destroy(function(err){
         if(err){
-            console.log(err);
             res.render("index");
         } else {
             res.render("index");
