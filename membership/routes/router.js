@@ -74,5 +74,21 @@ router.get("/logout",function(req,res){
         }
     });
 });
+////// notice router, 각 함수 인자값
+router.get("/notice-list",function(req,res){
+    res.render("notice_board");
+});
+
+router.get("/notice-regist",function(req,res){
+    res.render("notice_board_edit");
+});
+
+router.get("/notice-edit",function(req,res){
+    res.render("notice_board_edit");
+});
+
+router.post("/posts",function(req,res){
+    res.render("notice_board");
+});
 
 module.exports = router;

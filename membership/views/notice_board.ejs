@@ -1,0 +1,21 @@
+<% include _header %>
+<h1>게시판</h1>
+<div id="notice_board">
+    <% if(notices) { %>
+        <div class="notice-list">
+        <% notices.forEach(function(notice){ %>
+            <form class="form form-inline" method="get" action="/notice-edit">
+                <h2><%= notice %></h2>
+                <input type="hidden" name="id" value="<%= notice.id %>">
+                <input class="btn btn-primary" type="submit" value="수정">
+            </form>
+        <% }) %>
+        </div>
+    <% } else { %>
+        <h2>등록된 글이 없습니다.</h2>
+    <% } %>
+    <form class="form-inline form" method="get" action="/notice-reigst">
+        <input class="btn btn-primary" type="submit" value="등록">
+    </form>
+</div>
+<% include _footer %>

@@ -1,14 +1,4 @@
 <% include _header.ejs %>
-<h1> Notice Board</h1>
-<div id="notice_board">
-    <% if(notices) { %>
-        <% notices.forEach(function(notice){ %>
-            <div class="">
-                <h2><%= notice %></h2>
-            </div>
-        <% }) %>
-    <% } else { %>
-        <h2>등록된 글이 없습니다.</h2>
-    <% } %>
-</div>
+<h1>Hello! This is home</h1>
+
 <% include _footer.ejs %>
