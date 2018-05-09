@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var userFunc = require("../models/user.js");
+var queryFunc = require("../models/query.js");
 
 router.use(function(req,res,next){
     res.locals.currentUser = req.currentUser;
@@ -10,7 +10,7 @@ router.use(function(req,res,next){
 
 router.get("/",function(req,res){
     if(req.session.user_id){
-        userFunc.login(req.session.user_id,req.session.pw,function(result){
+        queryFunc.login(req.session.user_id,req.session.pw,function(result) {
             if("err" in result){
                 req.flash("error","세션이 만료되었습니다.");
                 res.render("index");
@@ -30,7 +30,7 @@ router.get("/login",function(req,res){
 });
 
 router.post("/login",function(req,res){
-    userFunc.login(req.body._id,req.body._pw,function(result){
+    queryFunc.login(req.body._id,req.body._pw,function(result){
         if("err" in result){
             req.flash("error",result["err"]);
             res.redirect("/login");
@@ -50,7 +50,7 @@ router.get("/signup",function(req,res){
 });
 
 router.post("/signup",function(req,res){
-    userFunc.signup(req.body._id,req.body._pw,req.body._name,function(result){
+    queryFunc.signup(req.body._id,req.body._pw,req.body._name,function(result){
         if("err" in result){
             req.flash("error",result["err"]);
             res.redirect("/signup");
