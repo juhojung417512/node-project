@@ -1,20 +1,22 @@
 <% include _header %>
-<form action="/posts" method="post" class="form">
 <% if(is_edit) { %>
-    <h1>게시판 글 수정</h1>
-    <h2>제목 : <input type="text" value="<%= notice.title || "" %>"name="title" class="form-control"></h2>
-    <h2>글 내용</h2>
-    <textarea name="posts" class="form-control">
-        <%= notice.posts || "" %>
-    </textarea>
-    
+    <form action="/notice-edit" method="post" class="form">
+        <h1>게시판 글 수정</h1>
+        <h2>제목 : <input type="text" value="<%= notice.title || "" %>"name="title" class="form-control"></h2>
+        <h2>글 내용</h2>
+        <textarea name="posts" class="form-control"><%= notice.posts || "" %></textarea>
+        <input type="submit" class="btn btn-primaray">
+        <input type="hidden" name="id" value="<%= notice.id %>">
+    </form>
 <% } else { %>
-    <h1>게시판 글 등록</h1>
-    <h2>제목 :  <input type="text" name="title" class="form-control"></h2>
-    <h2>글 내용</h2>
-    <textarea name="posts" class="form-control">
-    </textarea>
+    <form action="/notice-regist" method="post" class="form">
+        <h1>게시판 글 등록</h1>
+        <h2>제목 :  <input type="text" name="title" class="form-control"></h2>
+        <h2>글 내용</h2>
+        <textarea name="posts" class="form-control">
+        </textarea>
+        <input type="submit" class="btn btn-primaray">
+        <input type="hidden" name="user_id" value="<%= currentUser.user_id %>">
+    </form>
 <% } %>
-<input type="submit" class="btn btn-primaray">
-</form>
 <% include _footer %>

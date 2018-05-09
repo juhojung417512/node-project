@@ -65,27 +65,24 @@ var noticeboardList = function(callback){
             if(rows.length != 0){
                 for(var i=0;i<rows.length;i++){
                     result.push(rows[i]);
-                    console.log(rows[i].title);
                 }
-                callback(result);
             } else {
                 result = null;
-                callback(result);
             }
         } else {
             result = {
                 "err" : "db error"
             };
-            callback(result);
         }
+        callback(result);
     });
 };
 
-var noticeboardSelect = function(id,user_id,callback){
-    connection.query("select * from notice_board where id="+id + "and owner = \"" + user_id + "\"",function(err,rows,fields){
+var noticeboardSelect = function(id,callback){
+    connection.query("select * from notice_board where id=\""+id+"\"",function(err,rows,fields){
         if(!err){
             if(rows.length != 0){
-
+                result = rows[0];
             } else {
                 result = {
                     "err" : "해당하는 게시물이 없습니다."
@@ -96,6 +93,7 @@ var noticeboardSelect = function(id,user_id,callback){
                 "err" : "db error"
             };
         }
+        callback(result);
     });
 };
 
@@ -115,10 +113,30 @@ var noticeboardRegist = function(title,posts,user_id,callback){
     });
 };
 
+var noticeboardEdit = function(id,title,posts,callback){
+    var insert_dict = {
+        "title" : title,
+        "posts": posts,
+        "date": new Date().toISOString().slice(0, 19).replace('T', ' '),
+        "id": id
+    };
+    connection.query("update notice_board set title=? , posts=? , date=? where id= ?",
+                    [insert_dict.title,insert_dict.posts,insert_dict.date,insert_dict.id],function(err,res){
+        if(!err){
+            callback(insert_dict);
+        } else {
+            callback(
+                {"err":"db error"}
+            );
+        }
+    });
+};
+
 module.exports = {
     login: login,
     signup: signup,
     noticeboardList: noticeboardList,
+    noticeboardEdit: noticeboardEdit,
     noticeboardRegist: noticeboardRegist,
     noticeboardSelect: noticeboardSelect
 };

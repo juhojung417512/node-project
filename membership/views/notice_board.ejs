@@ -1,21 +1,37 @@
 <% include _header %>
+<style>
+    h1{
+        border-bottom-style: solid;
+    }
+    .notice{
+        border-bottom-style: dotted;
+    }
+    #registButton{
+        float: right;
+    }
+</style>
 <h1>게시판</h1>
 <div id="notice_board">
+    <form class="form-inline form" method="get" action="/notice-regist">
+        <input class="btn btn-primary" id="registButton" type="submit" value="등록">
+    </form>
     <% if(notices) { %>
         <div class="notice-list">
         <% notices.forEach(function(notice){ %>
-            <form class="form form-inline" method="get" action="/notice-edit">
-                <h2><%= notice %></h2>
-                <input type="hidden" name="id" value="<%= notice.id %>">
-                <input class="btn btn-primary" type="submit" value="수정">
-            </form>
+            <div class="notice">
+                <form class="form form-inline" method="get" action="/notice-edit/<%= notice.id %>">
+                    <h2>제목 : <%= notice.title %></h2>
+                    <h3>내용 : <%= notice.posts %></h3>
+                    <h3>등록 날짜 : <%= notice.date %></h3>
+                    <% if(currentUser.user_id == notice.owner) { %>
+                        <input class="btn btn-primary" type="submit" value="수정">
+                    <% } %>
+                </form>
+            </div>
         <% }) %>
         </div>
     <% } else { %>
         <h2>등록된 글이 없습니다.</h2>
     <% } %>
-    <form class="form-inline form" method="get" action="/notice-reigst">
-        <input class="btn btn-primary" type="submit" value="등록">
-    </form>
 </div>
 <% include _footer %>
