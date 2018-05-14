@@ -16,7 +16,7 @@ class PhoneForm extends Component{
         this.handleSubmit = (e) =>{
             e.preventDefault();
 
-            this.props.onCeate(this.state);
+            this.props.onCreate(this.state);
             this.setState({
                 name:'',
                 phone:''
