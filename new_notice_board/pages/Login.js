@@ -1,18 +1,6 @@
 import React,{Component} from 'react';
 import queryFunc from '../tools/query';
-// fetch('/todo/meterla',{
-//     method: 'POST',
-//     body: JSON.stringify({
-//       task: self.refs.task.value
-//     }),
-//     headers: {"Content-Type": "application/json"}
-//   })
-//   .then(function(response){
-//     return response.json()
-//   }).then(function(body){
-//     console.log(body);
-//     alert(self.refs.task.value)
-//   });
+
 class Login extends Component{
     static defaultProps() {
         onLogin : () => console.warn("onLogin undefined")
@@ -35,6 +23,28 @@ class Login extends Component{
     
         this.handleLogin = ()=>{
             const {onLogin} = this.props;
+            fetch('/login',{
+                method: 'POST',
+                body: JSON.stringify({
+                    _id : this.state.user_id,
+                    _pw : this.state.pw
+            }),
+                headers: {"Content-Type": "application/json"}
+            }).then(function(res){
+                if(res.result === false)
+                {
+                    this.state.setState({
+                        error: true,
+                        error_msg: "아이디 혹은 패스워드가 잘못되었습니다."
+                    });
+                } else {
+                    onLogin({
+                        user_id : this.state.user_id,
+                        name : this.state.name,
+                        date : this.state.date
+                    });
+                }
+            });
             let result = async () => {
                 console.log("IN");
                 await queryFunc.login(this.state.user_id,this.state.pw).then((res)=>{
@@ -47,7 +57,7 @@ class Login extends Component{
                     } else {
                         this.state.setState({
                             error: true,
-                            error_msg: "패스워드가 잘못되었습니다."
+                            error_msg: "아이디 혹은 패스워드가 잘못되었습니다."
                         });
                     }
                     
