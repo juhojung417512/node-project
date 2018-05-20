@@ -3,139 +3,98 @@ var router = express.Router();
 var queryFunc = require("../tools/query.js");
 var needLoginURL = ["/logout","/notice-list","/notice-regist","notice-edit"];
 
-// api 처럼 수정하기
-router.get("/api",function(req,res){
+// message : info 넘기는것
+// result : 에러 or 성공
+router.get("/",function(req,res){
     if(req.session.user_id){
-        queryFunc.login(req.session.user_id,req.session.pw,function(result) {
-            if("err" in result){
-                req.flash("error","세션이 만료되었습니다.");
-                res.render("index");
-            } else {
-                res.render("index",{
-                    currentUser : result
-                });
-            }
-        });        
-    } else {
-        res.render("index");
-    }    
-});
-
-router.get("/login",function(req,res){
-    res.render("login");
+        async () => {
+            await queryFunc.login(req.session.user_id,req.session.pw).then((rows) => {
+                if(rows.length >= 1 && rows[0].pw === pw){
+                    res.send({result:rows[0]});
+                }
+                else {
+                    res.send({result:false,msg:"세션이 만료되었습니다."})
+                }
+            }).catch((err) => {
+                res.send({result:false,msg:"DB ERROR"});
+            });
+        }
+    }
 });
 
 router.post("/login",function(req,res){
-    queryFunc.login(req.body._id,req.body._pw,function(result){
-        if("err" in result){
-            req.flash("error",result.err);
-            res.redirect("/login");
-        } else {
-            req.session.user_id = result.id;
-            req.session.pw = result.pw;
-            req.session.name = result.name;
-            res.render("index",{
-                currentUser : result
-            });
-        }
-    });    
-});
-
-router.get("/signup",function(req,res){
-    res.render("signup");
+    async () =>{
+        await queryFunc.login(req.body._id,req.body._pw).then((rows)=>{
+            req.session.user_id = rows[0].id;
+            req.session.pw = rows[0].pw;
+            req.session.name = rows[0].name;
+            res.send({result:rows[0]});
+        }).catch((err)=>{
+            res.send({result:false,msg:err});
+        });
+    }
 });
 
 router.post("/signup",function(req,res){
-    queryFunc.signup(req.body._id,req.body._pw,req.body._name,function(result){
-        if("err" in result){
-            req.flash("error",result.err);
-            res.redirect("/signup");
-        } else {
-            req.session.user_id = result.id;
-            req.session.pw = result.pw;
-            req.session.name = result.name;
-            res.render("index",{
-                currentUser : result
-            });
-        }
-    });    
+    async () =>{
+        await queryFunc.signup(req.body._id,req.body._pw,req.body._name).then((rows)=>{
+            req.session.user_id = rows[0].id;
+            req.session.pw = rows[0].pw;
+            req.session.name = rows[0].name;
+            res.send({result:rows[0]});
+        }).catch((err) =>{
+            res.send({result:false,msg:err});
+        });
+    }
 });
 
 router.get("/logout",function(req,res){
     req.session.destroy(function(err){
         if(err){
-            req.flash("error",err);
-            res.render("index");
+            res.send({result:false});
         } else {
-            res.render("index");
+            res.send({result:true});
         }
     });
 });
 
 router.get("/notice-list",function(req,res){
-    queryFunc.noticeboardList(function(result){
-        if("err" in result || result == null){
-            req.flash("error",result.err);
-            res.render("notice_board");
-        } else {
-            res.render("notice_board",{
-                notices : result,
-                currentUser: {
-                    user_id: req.session.user_id,
-                    name: req.session.name
-                }
-            });
-        }
-    });
-});
-
-router.get("/notice-regist",function(req,res){
-    res.render("notice_board_edit",{
-        is_edit: false,
-        currentUser: {
-            user_id: req.session.user_id,
-            name: req.session.name
-        }
-    });
+    async () => { 
+        await queryFunc.noticeboardList().then((rows)=>{
+            res.send({result:rows})
+        }).catch((err)=>{
+            res.send({result:false,msg:err});
+        });
+    }
 });
 
 router.get("/notice-edit/:id",function(req,res){
-    console.log(req.body);
-    queryFunc.noticeboardSelect(req.params.id,function(result){
-        if("err" in result){
-            req.flash("error",result.err);
-            res.redirect("/notice-list");
-        } else {
-            res.render("notice_board_edit",{
-                is_edit: true,
-                notice: result
-            });
-        }
-    });
-    
+    async () => {
+        await queryFunc.noticeboardSelect(req.params.id).then((rows)=>{
+            res.send({result:rows[0]})
+        }).catch((err)=>{
+            res.send({result:false,msg:err})
+        })
+    }
 });
 
 router.post("/notice-regist",function(req,res){
-    queryFunc.noticeboardRegist(req.body.title,req.body.posts,req.body.user_id,function(result){
-        if("err" in result){
-            req.flash("error",result.err);
-            res.render("notice_board");
-        } else {
-            req.flash("info","등록하였습니다.");
-            res.redirect("/notice-list");
-        }
-    });
+    async () => {
+        await queryFunc.noticeboardRegist(req.body.title,req.body.posts,req.body.user_id).then((rows)=>{
+            res.send({result:rows[0],msg:"등록하였습니다."});
+        }).catch((err)=>{
+            res.send({result:false,msg:err});
+        });
+    }
 });
 
 router.post("/notice-edit",function(req,res){
-    queryFunc.noticeboardEdit(req.body.id,req.body.title,req.body.posts,function(result){
-        if("err" in result){
-            req.flash("error",result.err);
-            res.redirect("/notice-list");
-        } else{
-            req.flash("info","수정하였습니다.");
-            res.redirect("/notice-list");
-        }
-    });
+    async () => {
+        await queryFunc.noticeboardEdit(req.body.id,req.body.title,req.body.posts).then((rows)=>{
+            res.send({result:rows[0],msg:"수정하였습니다."});
+        }).catch((err)=>{
+            res.send({result:false,msg:err});
+        });
+    }
 });
 module.exports = router;

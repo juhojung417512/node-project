@@ -1,6 +1,18 @@
 import React,{Component} from 'react';
 import queryFunc from '../tools/query';
-// restful 하게 api 보내는 과정 해야함;
+// fetch('/todo/meterla',{
+//     method: 'POST',
+//     body: JSON.stringify({
+//       task: self.refs.task.value
+//     }),
+//     headers: {"Content-Type": "application/json"}
+//   })
+//   .then(function(response){
+//     return response.json()
+//   }).then(function(body){
+//     console.log(body);
+//     alert(self.refs.task.value)
+//   });
 class Login extends Component{
     static defaultProps() {
         onLogin : () => console.warn("onLogin undefined")
@@ -28,9 +40,9 @@ class Login extends Component{
                 await queryFunc.login(this.state.user_id,this.state.pw).then((res)=>{
                     if(rows.length >= 1 && rows[0].pw === pw){
                         onLogin({
-                        user_id : this.state.user_id,
-                        name : this.state.name,
-                        date : this.state.date
+                            user_id : this.state.user_id,
+                            name : this.state.name,
+                            date : this.state.date
                         });
                     } else {
                         this.state.setState({
