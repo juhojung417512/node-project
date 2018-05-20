@@ -1,5 +1,4 @@
 import React,{Component} from 'react';
-import queryFunc from '../tools/query';
 
 class Login extends Component{
     static defaultProps() {
@@ -23,6 +22,7 @@ class Login extends Component{
     
         this.handleLogin = ()=>{
             const {onLogin} = this.props;
+            const loginObj = this
             fetch('/login',{
                 method: 'POST',
                 body: JSON.stringify({
@@ -30,44 +30,23 @@ class Login extends Component{
                     _pw : this.state.pw
             }),
                 headers: {"Content-Type": "application/json"}
-            }).then(function(res){
-                if(res.result === false)
-                {
-                    this.state.setState({
-                        error: true,
-                        error_msg: "아이디 혹은 패스워드가 잘못되었습니다."
-                    });
-                } else {
-                    onLogin({
-                        user_id : this.state.user_id,
-                        name : this.state.name,
-                        date : this.state.date
-                    });
-                }
-            });
-            let result = async () => {
-                console.log("IN");
-                await queryFunc.login(this.state.user_id,this.state.pw).then((res)=>{
-                    if(rows.length >= 1 && rows[0].pw === pw){
-                        onLogin({
-                            user_id : this.state.user_id,
-                            name : this.state.name,
-                            date : this.state.date
-                        });
-                    } else {
-                        this.state.setState({
+            }).then(function(response){
+                response.json().then((res)=>{
+                    if(res.result === false)
+                    {
+                        loginObj.setState({
                             error: true,
                             error_msg: "아이디 혹은 패스워드가 잘못되었습니다."
                         });
+                    } else {
+                        onLogin({
+                            user_id : loginObj.state.user_id,
+                            name : loginObj.state.name,
+                            date : loginObj.state.date
+                        });
                     }
-                    
-                } , (res) =>{
-                    this.state.setState({
-                        error: true,
-                        error_msg: "DB ERROR"
-                    });
                 });
-            }
+            });
         }
     }
     
@@ -85,7 +64,7 @@ class Login extends Component{
                     {window.confirm(this.state.error_msg)}
                 </div>
             );
-            this.state.setState({
+            this.setState({
                 error: false
             });
         } else { 

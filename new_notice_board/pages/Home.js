@@ -1,13 +1,15 @@
-import React from 'react';
+import React, {Component} from 'react';
 
-const Home = () =>{
-    return(
-        <div>
-            <h2>
-                홈
-            </h2>
-        </div>
-    );
+class Home extends Component{
+    reunder(){
+        return(
+            <div>
+                <h2>
+                    홈
+                </h2>
+            </div>
+        );
+    }
 };
 
 export default Home;

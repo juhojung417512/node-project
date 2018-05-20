@@ -9,6 +9,7 @@ import Menu from '../components/Menu';
 class Client extends Component{
     constructor(props){
         super(props);
+        
         this.state={
             isLogin : false,
             user_id : 0,
@@ -28,7 +29,6 @@ class Client extends Component{
     }
     
     render(){
-        
         if(this.state.isLogin){
             return(
                     <div>

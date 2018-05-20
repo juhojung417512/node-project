@@ -10,18 +10,13 @@ function _query(sql,args){
         connection.query(sql,args,function(err,rows){
             if(err)
                 return reject(err)
+            console.log("ASDASDASD");
             return resolve(rows)
         })
     })
 }
 
 var result;
-var allUser = _query(`
-        select
-        *
-        from
-        user
-    `);
     
 var login = function(id, pw){
     return _query(`
@@ -30,7 +25,7 @@ var login = function(id, pw){
         from 
         user 
         where 
-        user_id=${id};
+        user_id="${id}";
         `);
 };
 /////
@@ -138,6 +133,5 @@ module.exports = {
     noticeboardList: noticeboardList,
     noticeboardEdit: noticeboardEdit,
     noticeboardRegist: noticeboardRegist,
-    noticeboardSelect: noticeboardSelect,
-    allUser : allUser
+    noticeboardSelect: noticeboardSelect
 };

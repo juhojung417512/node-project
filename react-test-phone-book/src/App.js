@@ -53,7 +53,8 @@ class App extends Component {
   render() {
     const {information, keywords} = this.state;
     const filteredList = information.filter(
-      info => info.name.indexOf(keywords) !== -1
+      info => info.name.indexOf(
+        keywords) !== -1
     );
     return (
       <div className="App">
