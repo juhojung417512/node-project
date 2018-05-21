@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const session = require("express-session");
 const queryfunc = require("../tools/query");
 const path = require('path');
-const routes = require("../routes/router.js");
+const api = require("./api.js");
 const app = express();
 const port = 3000;
 
@@ -19,7 +19,7 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24// 쿠키 유효기간 1일
     }
 }));
-app.use(routes);
+app.use(api);
 
 const server = app.listen(port, () => {
 	console.log('Express listening on port', port);

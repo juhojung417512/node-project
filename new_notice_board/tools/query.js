@@ -25,30 +25,53 @@ var login = function(id, pw){
         from 
         user 
         where 
-        user_id="${id}";
+        user_id="${id}"
+        and
+        pw="${pw}"
         `);
 };
-/////
-var signup = async function(id,pw,name){
-    await connection.query("select * from user where user_id=\""+id+"\";",async function(err,rows,fields)
-    {
-        if(!err && rows.length === 0){
+
+var userSearch = function(id){
+    return _query(`
+    select 
+    * 
+    from 
+    user 
+    where 
+    user_id="${id}"
+    `);
+}
+
+var signup = function(id,pw,name){
+    let res= _query(`
+        select
+        *
+        from 
+        user
+        where
+        user_id="${id}"
+    `).then((rows)=>{
+        if(rows.length === 0){
             var insert_dict = {
                 "user_id" : id,
                 "pw" : pw,
                 "name": name,
                 "date": new Date().toISOString().slice(0, 19).replace('T', ' ')};
             //db insert
-            await connection.query("insert into user set ?",insert_dict,function(err,res){
-                return insert_dict;
-            });
+            return _query(`
+                insert
+                into
+                user
+                set
+                ${insert_dict}
+            `);
+        } else {
+            return false;
         }
-        else{
-            return {
-                "err":"db error"
-            };
-        }
+    }, (err)=>{
+        return false;
     });
+    return res;
 };
 
 var noticeboardList = async function(){
@@ -128,6 +151,7 @@ var noticeboardEdit = async function(id,title,posts){
 };
 
 module.exports = {
+    userSearch: userSearch,
     login: login,
     signup: signup,
     noticeboardList: noticeboardList,

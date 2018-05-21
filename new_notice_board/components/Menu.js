@@ -27,6 +27,7 @@ class Menu extends Component{
                     <ul>
                         <li><NavLink exact activeStyle={activeStyle} to="/">Home</NavLink></li>
                         <li><NavLink activeStyle={activeStyle} to="/login">Login</NavLink></li>
+                        <li><NavLink activeStyle={activeStyle} to="/signup">Signup</NavLink></li>
                     </ul>
                     <hr/>
                 </div>

@@ -1,8 +1,8 @@
 import React,{Component} from 'react';
 
-class Login extends Component{
+class Signup extends Component{
     static defaultProps() {
-        onLogin : () => console.warn("onLogin undefined")
+        onSignup : () => console.warn("onLogin undefined")
     }
     constructor(props){
         super(props);
@@ -18,37 +18,36 @@ class Login extends Component{
                 [e.target.name] : e.target.value
             });
         }
-    
-        this.handleLogin = ()=>{
+        this.handleSignup = ()=>{
             const {onLogin} = this.props;
-            const loginObj = this
-            fetch('/api/login',{
+            const signupObj = this
+            fetch('/api/signup',{
                 method: 'POST',
                 body: JSON.stringify({
                     _id : this.state.user_id,
-                    _pw : this.state.pw
+                    _pw : this.state.pw,
+                    _name: this.state.name
             }),
                 headers: {"Content-Type": "application/json"}
             }).then(function(response){
                 response.json().then((res)=>{
                     if(res.result === false)
                     {
-                        loginObj.setState({
+                        signupObj.setState({
                             error: true,
-                            error_msg: "아이디 혹은 패스워드가 잘못되었습니다."
+                            error_msg: "이미 사용중인 ID 입니다."
                         });
                     } else {
-                        onLogin({
-                            user_id : loginObj.state.user_id,
-                            name : loginObj.state.name
+                        onSignup({
+                            user_id : signupObj.state.user_id,
+                            name : signupObj.state.name
                         });
                     }
                 });
             });
         }
     }
-    
-    render(){
+    render() {
         const style={
             border: "1px solid black",
             padding: "8px",
@@ -71,7 +70,7 @@ class Login extends Component{
                 </div>
             );
         }
-        return(
+        return (
             <div style={style}>
                 <div>{errorDiv}</div>
                 <input 
@@ -84,10 +83,15 @@ class Login extends Component{
                     placeholder="PW"
                     onChange={this.handleChange}
                 />
-                <button onClick={this.handleLogin}> 로그인 </button>
+                <input
+                    name="name"
+                    placeholder="User Name"
+                    onChange={this.handleChange}
+                />
+                <button onClick={this.handleLogin}> 회원가입 </button>
             </div>
         );
-    }    
+    }
 }
 
-export default Login;
+export default Signup;
