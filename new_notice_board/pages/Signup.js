@@ -1,4 +1,5 @@
 import React,{Component} from 'react';
+import {ajax} from "../tools/utils"
 
 class Signup extends Component{
     static defaultProps() {
@@ -18,33 +19,25 @@ class Signup extends Component{
                 [e.target.name] : e.target.value
             });
         }
-        this.handleSignup = ()=>{
-            const {onLogin} = this.props;
-            const signupObj = this
-            fetch('/api/signup',{
-                method: 'POST',
-                body: JSON.stringify({
-                    _id : this.state.user_id,
-                    _pw : this.state.pw,
-                    _name: this.state.name
-            }),
-                headers: {"Content-Type": "application/json"}
-            }).then(function(response){
-                response.json().then((res)=>{
-                    if(res.result === false)
-                    {
-                        signupObj.setState({
-                            error: true,
-                            error_msg: "이미 사용중인 ID 입니다."
-                        });
-                    } else {
-                        onSignup({
-                            user_id : signupObj.state.user_id,
-                            name : signupObj.state.name
-                        });
-                    }
+        this.handleSignup = async()=>{
+            let res = await ajax('/api/signup',{
+                _id : this.state.user_id,
+                _pw : this.state.pw,
+                _name: this.state.name
+            })
+
+            if(res.result === false)
+            {
+                this.setState({
+                    error: true,
+                    error_msg: "이미 사용중인 ID 입니다."
                 });
-            });
+            } else {
+                this.props.onSignup({
+                    user_id : this.state.user_id,
+                    name : this.state.name
+                });
+            }
         }
     }
     render() {
@@ -88,7 +81,7 @@ class Signup extends Component{
                     placeholder="User Name"
                     onChange={this.handleChange}
                 />
-                <button onClick={this.handleLogin}> 회원가입 </button>
+                <button onClick={this.handleSignup}> 회원가입 </button>
             </div>
         );
     }

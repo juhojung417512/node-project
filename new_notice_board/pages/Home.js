@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
 class Home extends Component{
-    reunder(){
+    render(){
         return(
             <div>
                 <h2>

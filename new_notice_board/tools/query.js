@@ -10,7 +10,6 @@ function _query(sql,args){
         connection.query(sql,args,function(err,rows){
             if(err)
                 return reject(err)
-            console.log("ASDASDASD");
             return resolve(rows)
         })
     })
@@ -43,35 +42,15 @@ var userSearch = function(id){
 }
 
 var signup = function(id,pw,name){
-    let res= _query(`
-        select
-        *
-        from 
+    let date = new Date().toISOString().slice(0, 19).replace('T', ' ')
+    return _query(`
+        insert
+        into
         user
-        where
-        user_id="${id}"
-    `).then((rows)=>{
-        if(rows.length === 0){
-            var insert_dict = {
-                "user_id" : id,
-                "pw" : pw,
-                "name": name,
-                "date": new Date().toISOString().slice(0, 19).replace('T', ' ')};
-            //db insert
-            return _query(`
-                insert
-                into
-                user
-                set
-                ${insert_dict}
-            `);
-        } else {
-            return false;
-        }
-    }, (err)=>{
-        return false;
-    });
-    return res;
+        (user_id,pw,name,date)
+        values
+        ("${id}","${pw}","${name}","${date}")
+    `);
 };
 
 var noticeboardList = async function(){

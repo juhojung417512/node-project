@@ -39,8 +39,8 @@ class Login extends Component{
                         });
                     } else {
                         onLogin({
-                            user_id : loginObj.state.user_id,
-                            name : loginObj.state.name
+                            user_id : res.result.user_id,
+                            name : res.result.name
                         });
                     }
                 });
@@ -58,9 +58,9 @@ class Login extends Component{
         if(this.state.error)
         {
             errorDiv = (
-                <div>
+                <span>
                     {window.confirm(this.state.error_msg)}
-                </div>
+                </span>
             );
             this.setState({
                 error: false

@@ -10,16 +10,6 @@ import Menu from '../components/Menu';
 class Client extends Component{
     constructor(props){
         super(props);
-        fetch('/api',{
-            method: 'POST',
-            body: JSON.stringify({
-                _id : this.state.user_id,
-                _pw : this.state.pw
-        }),
-            headers: {"Content-Type": "application/json"}
-        }).then(function(response){
-            
-        });
         this.state={
             isLogin : false,
             user_id : 0,
@@ -34,16 +24,28 @@ class Client extends Component{
                 name : data.name
             });
         }
+        fetch('/api',{
+            method: 'get',
+            headers: {"Content-Type": "application/json"}
+        }).then(function(response){
+            response.json().then((res)=>{
+                if(res.result !== false){
+                    this.setState({
+                        isLogin : true,
+                        user_id : res.result.user_id,
+                        name: res.result.name
+                    })
+                }
+            })
+        });
     }
-    
+    //router 안에다가 route 몰아넣기
     render(){
         if(this.state.isLogin){
             return(
                     <div>
                         <h2>User Id : {this.state.user_id}</h2>
                         <h2>Name : {this.state.name}</h2>
-                    </div>
-                    <div>
                         <Menu isLogin={this.state.isLogin}/>
                         <Route exact path="/" component={Home} />
                         <Switch>

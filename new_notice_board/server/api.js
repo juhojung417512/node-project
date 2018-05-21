@@ -5,37 +5,54 @@ var needLoginURL = ["/logout","/notice-list","/notice-regist","notice-edit"];
 
 // msg : message
 // result : 에러 or 성공
+
+//API 사용
+function API(uri,func){
+    router.post(uri,async function(req,res){
+        try{
+            await func()
+        }catch(err){
+            res.json({error:1, errorString:err.toString()})
+        }
+    })
+}
+
 router.get("/api",async function(req,res){
+    console.log(req.session);
     if(req.session.user_id){
-        await queryFunc.login(req.session.user_id,req.session.pw).then((rows) => {
-            if(rows.length >= 1 && rows[0].pw === pw){
-                res.send({result:rows[0]});
-            }
-            else {
-                res.send({result:false,msg:"세션이 만료되었습니다."})
-            }
-        }, (err) => {
-            res.send({result:false,msg:"DB ERROR"});
-        });
+        console.log(req.session.user_id);
+        let rows = await queryFunc.login(req.session.user_id,req.session.pw)
+        if(rows.length >= 1 && rows[0].pw === pw){
+            res.send({result:rows[0]});
+        }
+        else {
+            res.send({result:false,msg:"세션이 만료되었습니다."})
+        }
+    }else{
+        res.send("failed")
     }
 });
 
-router.post("/api/login",async function(req,res){
-    await queryFunc.login(req.body._id,req.body._pw).then((rows)=>{
-        req.session.user_id = rows[0].id;
+API("/api/login",async function(req,res){
+    let rows = await queryFunc.login(req.body._id,req.body._pw)
+    console.log(rows);
+    if(rows.length === 0){
+        res.send({result:false,msg:"해당 유저가 없습니다."});    
+    } else {
+        req.session.user_id = rows[0].user_id;
         req.session.pw = rows[0].pw;
         req.session.name = rows[0].name;
+        console.log(req.session);
         res.send({result:rows[0]});
-    },(err)=>{
-        res.send({result:false,msg:err});
-    });
+    }
 });
 
-router.post("/api/signup",async function(req,res){
+API("/api/signup",async function(req,res){
     await queryFunc.userSearch(req.body._id).then(async (rows)=>{
+        console.log(rows.length);
         if(rows.length === 0){
             await queryFunc.signup(req.body._id,req.body._pw,req.body._name).then((rows)=>{
-                req.session.user_id = rows[0].id;
+                req.session.user_id = rows[0].user_id;
                 req.session.pw = rows[0].pw;
                 req.session.name = rows[0].name;
                 res.send({result:rows[0]});
