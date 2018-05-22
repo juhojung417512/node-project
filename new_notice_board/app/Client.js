@@ -6,6 +6,7 @@ import Posts  from '../pages/Posts';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
 import Menu from '../components/Menu';
+import {ajax} from "../tools/utils"
 
 class Client extends Component{
     constructor(props){
@@ -24,20 +25,16 @@ class Client extends Component{
                 name : data.name
             });
         }
-        fetch('/api',{
-            method: 'get',
-            headers: {"Content-Type": "application/json"}
-        }).then(function(response){
-            response.json().then((res)=>{
-                if(res.result !== false){
-                    this.setState({
-                        isLogin : true,
-                        user_id : res.result.user_id,
-                        name: res.result.name
-                    })
-                }
-            })
-        });
+        async () => {
+            let res = await ajax("/api/user-search")
+            if(res.result !== false){
+                this.setState({
+                    isLogin : true,
+                    user_id : res.result.user_id,
+                    name: res.result.name
+                })
+            }
+        }
     }
     //router 안에다가 route 몰아넣기
     render(){

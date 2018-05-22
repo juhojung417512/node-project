@@ -52,7 +52,7 @@ var signup = function(id,pw,name){
         ("${id}","${pw}","${name}","${date}")
     `);
 };
-
+// 마저 처리
 var noticeboardList = async function(){
     result = [];
     await connection.query("select * from notice_board",function(err,rows,fields){

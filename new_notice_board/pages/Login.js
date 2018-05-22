@@ -1,4 +1,5 @@
 import React,{Component} from 'react';
+import {ajax} from "../tools/utils"
 
 class Login extends Component{
     static defaultProps() {
@@ -19,32 +20,24 @@ class Login extends Component{
             });
         }
     
-        this.handleLogin = ()=>{
+        this.handleLogin = async ()=>{
             const {onLogin} = this.props;
-            const loginObj = this
-            fetch('/api/login',{
-                method: 'POST',
-                body: JSON.stringify({
-                    _id : this.state.user_id,
-                    _pw : this.state.pw
-            }),
-                headers: {"Content-Type": "application/json"}
-            }).then(function(response){
-                response.json().then((res)=>{
-                    if(res.result === false)
-                    {
-                        loginObj.setState({
-                            error: true,
-                            error_msg: "아이디 혹은 패스워드가 잘못되었습니다."
-                        });
-                    } else {
-                        onLogin({
-                            user_id : res.result.user_id,
-                            name : res.result.name
-                        });
-                    }
+            let res = await ajax("/api/login",{
+                _id : this.state.user_id,
+                _pw : this.state.pw
+            })
+            if(res.result === false)
+            {
+                loginObj.setState({
+                    error: true,
+                    error_msg: "아이디 혹은 패스워드가 잘못되었습니다."
                 });
-            });
+            } else {
+                onLogin({
+                    user_id : res.result.user_id,
+                    name : res.result.name
+                });
+            }            
         }
     }
     
