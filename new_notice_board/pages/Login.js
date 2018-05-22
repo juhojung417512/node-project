@@ -28,7 +28,7 @@ class Login extends Component{
             })
             if(res.result === false)
             {
-                loginObj.setState({
+                this.setState({
                     error: true,
                     error_msg: "아이디 혹은 패스워드가 잘못되었습니다."
                 });

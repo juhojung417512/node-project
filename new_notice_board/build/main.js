@@ -21,6 +21,7 @@ app.use(session({
   }
 }));
 app.use(api);
+
 app.get("/*", function (req, res) {
   let html = fs.readFileSync(__dirname + "/../public/index.html").toString();
   res.end(html);

@@ -10,9 +10,9 @@ var needLoginURL = ["/logout","/notice-list","/notice-regist","notice-edit"];
 function API(uri,func){
     router.post(uri,async function(req,res){
         try{
-            await func()
+            await func(req,res)
         }catch(err){
-            res.json({error:1, errorString:err.toString()})
+            res.send({result:false, msg:err.toString()})
         }
     })
 }
@@ -46,21 +46,21 @@ API("/api/login",async function(req,res){
 });
 
 API("/api/signup",async function(req,res){
-    await queryFunc.userSearch(req.body._id).then(async (rows)=>{
-        console.log(rows.length);
-        if(rows.length === 0){
-            await queryFunc.signup(req.body._id,req.body._pw,req.body._name).then((rows)=>{
-                req.session.user_id = rows[0].user_id;
-                req.session.pw = rows[0].pw;
-                req.session.name = rows[0].name;
-                res.send({result:rows[0]});
-            }, (err) =>{
-                res.send({result:false,msg:err});
-            });
-        } else {
-            res.send({result:false,msg:"이미 사용중인 아이디입니다."});
+    let rows = await queryFunc.userSearch(req.body._id)
+    if(rows.length === 0){
+        let rows2 = await queryFunc.signup(req.body._id,req.body._pw,req.body._name)
+        if(rows2){
+            req.session.user_id = rows2[0].user_id;
+            req.session.pw = rows2[0].pw;
+            req.session.name = rows2[0].name;
+            res.send({result:rows2[0]});
         }
-    });    
+        else {
+            res.send({result:false,msg:err});
+        }
+    } else {
+        res.send({result:false,msg:"이미 사용중인 아이디입니다."});
+    }   
 });
 
 API("/api/logout",function(req,res){
@@ -73,15 +73,15 @@ API("/api/logout",function(req,res){
     });
 });
 
-API("/api/notice-list",async function(req,res){
-    await queryFunc.noticeboardList().then((rows)=>{
+API("/api/board-list",async function(req,res){
+    let rows = await queryFunc.noticeboardList().then((rows)=>{
         res.send({result:rows})
     }, (err)=>{
         res.send({result:false,msg:err});
     });
 });
 
-API("/api/notice-edit-info/", async function(req,res){
+API("/api/board-edit-info/", async function(req,res){
     await queryFunc.noticeboardSelect(req.body._id).then((rows)=>{
         res.send({result:rows[0]})
     }, (err)=>{
@@ -89,7 +89,7 @@ API("/api/notice-edit-info/", async function(req,res){
     })
 });
 
-API("/api/notice-regist", async function(req,res){
+API("/api/board-regist", async function(req,res){
     await queryFunc.noticeboardRegist(req.body.title,req.body.posts,req.body.user_id).then((rows)=>{
         res.send({result:rows[0],msg:"등록하였습니다."});
     }, (err)=>{
@@ -97,7 +97,7 @@ API("/api/notice-regist", async function(req,res){
     });
 });
 
-API("/api/notice-edit", async function(req,res){
+API("/api/board-edit", async function(req,res){
     await queryFunc.noticeboardEdit(req.body.id,req.body.title,req.body.posts).then((rows)=>{
         res.send({result:rows[0],msg:"수정하였습니다."});
     }, (err)=>{

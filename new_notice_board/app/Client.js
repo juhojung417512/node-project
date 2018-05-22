@@ -18,14 +18,13 @@ class Client extends Component{
         }
         
         this.handleLogin = (data) => {
-            console.log(data);
             this.setState({
                 isLogin : true,
                 user_id : data.user_id,
                 name : data.name
             });
         }
-        async () => {
+        this.userSearch = async () => {
             let res = await ajax("/api/user-search")
             if(res.result !== false){
                 this.setState({
@@ -36,21 +35,27 @@ class Client extends Component{
             }
         }
     }
+    
+    componentWillMount() {
+        this.userSearch();
+    }
+    
     //router 안에다가 route 몰아넣기
     render(){
         if(this.state.isLogin){
             return(
-                    <div>
-                        <h2>User Id : {this.state.user_id}</h2>
-                        <h2>Name : {this.state.name}</h2>
-                        <Menu isLogin={this.state.isLogin}/>
-                        <Route exact path="/" component={Home} />
-                        <Switch>
-                            <Route path="/about/:name" component={About} />
-                            <Route path="/about" component={About} />
-                        </Switch>
-                        <Route path="/posts" component={Posts}/>
-                    </div>
+                <div>
+                    <h2>User Id : {this.state.user_id}</h2>
+                    <h2>Name : {this.state.name}</h2>
+                    <Menu isLogin={this.state.isLogin}/>
+                    <Route exact path="/" component={Home} />
+                    <Switch>
+                        <Route path="/about/:name" component={About} />
+                        <Route path="/about" component={About} />
+                    </Switch>
+                    <Route path="/posts" component={Posts}/>
+                    <Route path="/notice-board-list" component={NoticeBoard} />
+                </div>
             );
         }
         else {
