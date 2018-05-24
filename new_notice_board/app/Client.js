@@ -5,6 +5,8 @@ import About from "../pages/About"
 import Posts  from '../pages/Posts';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
+import NoticeBoard from '../pages/NoticeBoard';
+import NoticeBoardEdit from '../pages/NoticeBoardEdit';
 import Menu from '../components/Menu';
 import {ajax} from "../tools/utils"
 
@@ -54,18 +56,18 @@ class Client extends Component{
                         <Route path="/about" component={About} />
                     </Switch>
                     <Route path="/posts" component={Posts}/>
-                    <Route path="/notice-board-list" component={NoticeBoard} />
+                    <Route path="/NoticeBoard" component={NoticeBoard} />
                 </div>
             );
         }
         else {
             return(
-                    <div>
-                        <Menu isLogin={this.state.isLogin}/>
-                        <Route exact path="/" component={Home} />
-                        <Route path="/login" render={props=> <Login onLogin={this.handleLogin} />}/>
-                        <Route path="/signup" render={props=> <Signup onSignup={this.handleLogin} />}/>
-                    </div>
+                <div>
+                    <Menu isLogin={this.state.isLogin}/>
+                    <Route exact path="/" component={Home} />
+                    <Route path="/login" render={props=> <Login onLogin={this.handleLogin} />}/>
+                    <Route path="/signup" render={props=> <Signup onSignup={this.handleLogin} />}/>
+                </div>
             );
         }
     }

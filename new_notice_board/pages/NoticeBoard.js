@@ -1,10 +1,9 @@
 import React,{Component} from 'react';
+import {Route} from 'react-router-dom';
+import NoticeBoardEdit from "./NoticeBoardEdit"
 import {ajax} from '../tools/utils';
 
 class NoticeBoard extends Component{
-    static defaultProps = {
-        currentUser : null
-    }
     constructor(props){
         super(props);
         this.state = {
@@ -22,11 +21,9 @@ class NoticeBoard extends Component{
                 })
             }
         }
-        this.notice_list_edit = async() =>{
-            //
-        }
     }
-    componentWillMount() {
+    componentWillMount: function(){
+        console.log("adsasd");
         this.board_list_get();
     }
     render(){
@@ -40,7 +37,13 @@ class NoticeBoard extends Component{
                                 <h2>제목 : {row.title}</h2>
                                 <h3>내용 : {row.posts}</h3>
                                 <h3>등록 날짜 : {row.date}</h3>
-                                <button class="btn btn-primary" type="submit" onclick={this.notice_list_edit}>수정하기</button>
+                                <Route path="/NoticeBoardEdit" render={props=> 
+                                <NoticeBoardEdit isEdit={true} notice={{
+                                    title: row.title, 
+                                    posts: row.posts, 
+                                    date: row.date, 
+                                    id: row.id}
+                                    } />}>수정하기</Route>
                             </li>
                         );
                     } else {
@@ -54,9 +57,15 @@ class NoticeBoard extends Component{
                     }
                 })}
                 </ul>
+                <Route path="/NoticeBoardEdit" component={NoticeBoardEdit}>등록하기</Route>
             </div>
         )
     }
+}
+
+
+NoticeBoard.defaultProps= {
+    currentUser : null
 }
 
 export default NoticeBoard;

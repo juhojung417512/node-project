@@ -2,9 +2,6 @@ import React,{Component} from 'react';
 import {ajax} from "../tools/utils"
 
 class Login extends Component{
-    static defaultProps() {
-        onLogin : () => console.warn("onLogin undefined")
-    }
     constructor(props){
         super(props);
         this.state={
@@ -47,7 +44,10 @@ class Login extends Component{
             padding: "8px",
             margin: "8px"
         };
-        var errorDiv;
+        var errorDiv=(
+            <div>
+            </div>
+        );
         if(this.state.error)
         {
             errorDiv = (
@@ -58,11 +58,6 @@ class Login extends Component{
             this.setState({
                 error: false
             });
-        } else { 
-            errorDiv=(
-                <div>
-                </div>
-            );
         }
         return(
             <div style={style}>
@@ -81,6 +76,10 @@ class Login extends Component{
             </div>
         );
     }    
+}
+
+Login.defaultProps= {
+    onLogin : () => console.warn("onLogin undefined")
 }
 
 export default Login;

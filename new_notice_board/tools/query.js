@@ -52,81 +52,51 @@ var signup = function(id,pw,name){
         ("${id}","${pw}","${name}","${date}")
     `);
 };
-// 마저 처리
+
 var noticeboardList = async function(){
-    result = [];
-    await connection.query("select * from notice_board",function(err,rows,fields){
-        if(!err){
-            if(rows.length !== 0){
-                for(var i=0;i<rows.length;i++){
-                    result.push(rows[i]);
-                }
-            } else {
-                result = null;
-            }
-        } else {
-            result = {
-                "err" : "db error"
-            };
-        }
-        return result;
-    });
+    return _query(`
+        select 
+        *
+        from
+        notice_board
+    `);
 };
 
 var noticeboardSelect = async function(id){
-    await connection.query("select * from notice_board where id=\""+id+"\"",function(err,rows,fields){
-        if(!err){
-            if(rows.length !== 0){
-                result = rows[0];
-            } else {
-                result = {
-                    "err" : "해당하는 게시물이 없습니다."
-                };
-            }
-        } else {
-            result = {
-                "err" : "db error"
-            };
-        }
-        return result;
-    });
+    return _query(`
+        select
+        *
+        from
+        notice_board
+        where
+        id= "${id}"
+    `)
 };
 
 var noticeboardRegist = async function(title,posts,user_id){
-    var insert_dict = {
-        "title" : title,
-        "posts": posts,
-        "date": new Date().toISOString().slice(0, 19).replace('T', ' '),
-        "owner": user_id
-    };
-    await connection.query("insert into notice_board set?",insert_dict,function(err,res){
-        let result;
-        if(!err){
-            result = insert_dict;
-        } else {
-            result = {"err":"db error"};
-        }
-        return result;
-    });
+    let date = new Date().toISOString().slice(0, 19).replace('T', ' ')
+    return _query(`
+        insert
+        into
+        notice_board
+        (title,posts,date,owner)
+        values
+        ("${title}","${posts}","${date}","${user_id}")
+    `)
 };
 
 var noticeboardEdit = async function(id,title,posts){
-    var insert_dict = {
-        "title" : title,
-        "posts": posts,
-        "date": new Date().toISOString().slice(0, 19).replace('T', ' '),
-        "id": id
-    };
-    await connection.query("update notice_board set title=? , posts=? , date=? where id= ?",
-                    [insert_dict.title,insert_dict.posts,insert_dict.date,insert_dict.id],function(err,res){
-        let result;
-        if(!err){
-            result = insert_dict;
-        } else {
-            result = {"err":"db error"}
-        }
-        return result;
-    });
+    let date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    return _query(`
+        update
+        notice_board
+        set
+        title="${title}"
+        posts="${posts}"
+        date="${date}"
+        where
+        id="${id}"
+    `)
 };
 
 module.exports = {

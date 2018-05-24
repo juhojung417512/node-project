@@ -18,9 +18,7 @@ function API(uri, func) {
 }
 
 API("/api/user-search", async function (req, res) {
-    console.log(req.session);
     if (req.session.user_id) {
-        console.log(req.session.user_id);
         let rows = await queryFunc.login(req.session.user_id, req.session.pw);
         if (rows.length >= 1 && rows[0].pw === pw) {
             res.send({ result: rows[0] });
@@ -28,7 +26,7 @@ API("/api/user-search", async function (req, res) {
             res.send({ result: false, msg: "세션이 만료되었습니다." });
         }
     } else {
-        res.send("failed");
+        res.send({ result: false });
     }
 });
 
@@ -71,36 +69,30 @@ API("/api/logout", function (req, res) {
     });
 });
 
-API("/api/notice-list", async function (req, res) {
-    let rows = await queryFunc.noticeboardList().then(rows => {
-        res.send({ result: rows });
-    }, err => {
-        res.send({ result: false, msg: err });
-    });
+API("/api/board-list", async function (req, res) {
+    let rows = await queryFunc.noticeboardList();
+    console.log(rows);
+    if (rows !== Error) res.send({ result: rows });else res.send({ result: false, msg: err });
 });
 
-API("/api/notice-edit-info/", async function (req, res) {
-    await queryFunc.noticeboardSelect(req.body._id).then(rows => {
+API("/api/board-edit-info/", async function (req, res) {
+    //안씀
+    let rows = await queryFunc.noticeboardSelect(req.body._id);
+    if (rows !== Error) {
         res.send({ result: rows[0] });
-    }, err => {
-        res.send({ result: false, msg: err });
-    });
+    } else {
+        res.send({ result: false, msg: "해당하는 게시물이 없습니다." });
+    }
 });
 
-API("/api/notice-regist", async function (req, res) {
-    await queryFunc.noticeboardRegist(req.body.title, req.body.posts, req.body.user_id).then(rows => {
-        res.send({ result: rows[0], msg: "등록하였습니다." });
-    }, err => {
-        res.send({ result: false, msg: err });
-    });
+API("/api/board-regist", async function (req, res) {
+    let rows = await queryFunc.noticeboardRegist(req.body.title, req.body.posts, req.body.user_id);
+    if (rows !== Error) res.send({ result: rows[0], msg: "등록하였습니다." });else res.send({ result: false, msg: err });
 });
 
-API("/api/notice-edit", async function (req, res) {
-    await queryFunc.noticeboardEdit(req.body.id, req.body.title, req.body.posts).then(rows => {
-        res.send({ result: rows[0], msg: "수정하였습니다." });
-    }, err => {
-        res.send({ result: false, msg: err });
-    });
+API("/api/board-edit", async function (req, res) {
+    let rows = await queryFunc.noticeboardEdit(req.body.id, req.body.title, req.body.posts);
+    if (rows !== Error) res.send({ result: rows[0], msg: "수정하였습니다." });else res.send({ result: false, msg: err });
 });
 
 module.exports = router;
