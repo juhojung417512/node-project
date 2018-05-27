@@ -1,6 +1,5 @@
 import React,{Component} from 'react';
-import {Route} from 'react-router-dom';
-import NoticeBoardEdit from "./NoticeBoardEdit"
+import {Link} from 'react-router-dom';
 import {ajax} from '../tools/utils';
 
 class NoticeBoard extends Component{
@@ -9,12 +8,12 @@ class NoticeBoard extends Component{
         this.state = {
             board_list : []
         }
-        this.board_list_get = async() =>{
+        this.board_list_get = async() => {
             let rows = await ajax("/api/board-list");
-            if(rows.length !== 0){
+            if(rows.result.length !== 0){
                 let board_list = []
-                for(var i=0;i<rows.length;i++){
-                    board_list.push(rows[i]);
+                for(var i=0;i<rows.result.length;i++){
+                    board_list.push(rows.result[i]);
                 }
                 this.setState({
                     board_list: board_list
@@ -22,28 +21,28 @@ class NoticeBoard extends Component{
             }
         }
     }
-    componentWillMount: function(){
-        console.log("adsasd");
+    componentWillMount() {
         this.board_list_get();
     }
     render(){
         return(
             <div>
+                <h2>게시판 입니다!</h2>
                 <ul>
                 {this.state.board_list.map((row)=>{
-                    if(this.props.currentUser.user_id == notice.owner){
+                    if(this.props.user_id == row.owner){
                         return(
                             <li>
                                 <h2>제목 : {row.title}</h2>
                                 <h3>내용 : {row.posts}</h3>
                                 <h3>등록 날짜 : {row.date}</h3>
-                                <Route path="/NoticeBoardEdit" render={props=> 
-                                <NoticeBoardEdit isEdit={true} notice={{
-                                    title: row.title, 
-                                    posts: row.posts, 
-                                    date: row.date, 
-                                    id: row.id}
-                                    } />}>수정하기</Route>
+                                <button>
+                                <Link to={{pathname:"/NoticeBoardEdit", state:{
+                                    title: row.title,
+                                    posts: row.posts,
+                                    date: row.date,
+                                    id: row.id,
+                                    isEdit: true}}}>수정하기</Link> </button>
                             </li>
                         );
                     } else {
@@ -57,7 +56,7 @@ class NoticeBoard extends Component{
                     }
                 })}
                 </ul>
-                <Route path="/NoticeBoardEdit" component={NoticeBoardEdit}>등록하기</Route>
+                <button><Link to="/NoticeBoardRegist">등록하기</Link></button>
             </div>
         )
     }
@@ -65,7 +64,7 @@ class NoticeBoard extends Component{
 
 
 NoticeBoard.defaultProps= {
-    currentUser : null
+    user_id : ""
 }
 
 export default NoticeBoard;

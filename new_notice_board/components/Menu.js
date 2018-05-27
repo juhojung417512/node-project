@@ -8,7 +8,6 @@ class Menu extends Component{
             fontSize: '2rem'
         };
         if(this.props.isLogin){
-            
             return (
                 <div>
                     <ul>
@@ -16,7 +15,7 @@ class Menu extends Component{
                         <li><NavLink exact activeStyle={activeStyle} to="/about">About</NavLink></li>
                         <li><NavLink activeStyle={activeStyle} to="/about/foo">About Foo</NavLink></li>
                         <li><NavLink activeStyle={activeStyle} to="/posts">Posts</NavLink></li>
-                        <li><NavLink activeStyle={activeStyle} to="/notice_board">Notice Board</NavLink></li>
+                        <li><NavLink activeStyle={activeStyle} to="/NoticeBoard">Notice Board</NavLink></li>
                     </ul>
                     <hr/>
                 </div>

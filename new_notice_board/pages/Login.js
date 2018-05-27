@@ -1,4 +1,5 @@
 import React,{Component} from 'react';
+import {Link} from 'react-router-dom';
 import {ajax} from "../tools/utils"
 
 class Login extends Component{
@@ -11,7 +12,7 @@ class Login extends Component{
             error : false,
             error_msg: ""
         }
-        this.handleChange = (e)=>{ 
+        this.handleChange = (e)=>{
             this.setState({
                 [e.target.name] : e.target.value
             });
@@ -27,12 +28,13 @@ class Login extends Component{
             {
                 this.setState({
                     error: true,
-                    error_msg: "아이디 혹은 패스워드가 잘못되었습니다."
+                    error_msg: res.msg
                 });
             } else {
                 onLogin({
                     user_id : res.result.user_id,
-                    name : res.result.name
+                    name : res.result.name,
+                    pw: res.result.pw
                 });
             }            
         }
@@ -72,7 +74,7 @@ class Login extends Component{
                     placeholder="PW"
                     onChange={this.handleChange}
                 />
-                <button onClick={this.handleLogin}> 로그인 </button>
+                <button><Link to="/" onClick={this.handleLogin}> 로그인 </Link></button>
             </div>
         );
     }    

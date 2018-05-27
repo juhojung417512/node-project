@@ -18,8 +18,8 @@ function API(uri,func){
 }
 
 API("/api/user-search", async function(req,res){
-    if(req.session.user_id){
-        let rows = await queryFunc.login(req.session.user_id,req.session.pw)
+    if(req.body.user_id){
+        let rows = await queryFunc.login(req.body.user_id,req.body.pw)
         if(rows.length >= 1 && rows[0].pw === pw){
             res.send({result:rows[0]});
         }
@@ -36,9 +36,6 @@ API("/api/login",async function(req,res){
     if(rows.length === 0){
         res.send({result:false,msg:"해당 유저가 없습니다."});    
     } else {
-        req.session.user_id = rows[0].user_id;
-        req.session.pw = rows[0].pw;
-        req.session.name = rows[0].name;
         res.send({result:rows[0]});
     }
 });
@@ -48,9 +45,6 @@ API("/api/signup",async function(req,res){
     if(rows.length === 0){
         let rows2 = await queryFunc.signup(req.body._id,req.body._pw,req.body._name)
         if(rows2){
-            req.session.user_id = rows2[0].user_id;
-            req.session.pw = rows2[0].pw;
-            req.session.name = rows2[0].name;
             res.send({result:rows2[0]});
         }
         else {
@@ -61,26 +55,15 @@ API("/api/signup",async function(req,res){
     }   
 });
 
-API("/api/logout",function(req,res){
-    req.session.destroy(function(err){
-        if(err){
-            res.send({result:false});
-        } else {
-            res.send({result:true});
-        }
-    });
-});
-
 API("/api/board-list",async function(req,res){
     let rows = await queryFunc.noticeboardList()
-    console.log(rows);
     if(rows !== Error)
         res.send({result:rows})
     else
         res.send({result:false,msg:err});    
 });
 
-API("/api/board-edit-info/", async function(req,res){//안씀
+API("/api/board-edit-info", async function(req,res){
     let rows = await queryFunc.noticeboardSelect(req.body._id)
     if(rows !== Error){
         res.send({result:rows[0]})

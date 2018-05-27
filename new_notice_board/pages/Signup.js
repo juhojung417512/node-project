@@ -35,7 +35,8 @@ class Signup extends Component{
             } else {
                 this.props.onSignup({
                     user_id : this.state.user_id,
-                    name : this.state.name
+                    name : this.state.name,
+                    pw: this.state.pw
                 });
             }
         }

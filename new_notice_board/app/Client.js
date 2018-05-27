@@ -7,6 +7,7 @@ import Login from '../pages/Login';
 import Signup from '../pages/Signup';
 import NoticeBoard from '../pages/NoticeBoard';
 import NoticeBoardEdit from '../pages/NoticeBoardEdit';
+import NoticeBoardRegist from '../pages/NoticeBoardRegist';
 import Menu from '../components/Menu';
 import {ajax} from "../tools/utils"
 
@@ -23,18 +24,38 @@ class Client extends Component{
             this.setState({
                 isLogin : true,
                 user_id : data.user_id,
-                name : data.name
+                name : data.name,
+                pw: data.pw
             });
+            window.sessionStorage.setItem("user_id",data.user_id);
+            window.sessionStorage.setItem("name",data.name);
+            window.sessionStorage.setItem("pw",data.pw);
         }
+        
+        this.handleLogout = () => {
+            window.sessionStorage.clear();
+        }
+
         this.userSearch = async () => {
-            let res = await ajax("/api/user-search")
+            let res = await ajax("/api/user-search",{
+                user_id: this.state.user_id,
+                pw: this.state.pw
+            })
             if(res.result !== false){
                 this.setState({
                     isLogin : true,
                     user_id : res.result.user_id,
-                    name: res.result.name
+                    name: res.result.name,
+                    pw: res.result.pw
                 })
             }
+        }
+
+        this.handleBoardRegist = () => {
+            window.confirm("등록완료!")
+        }
+        this.handleBoardEdit = () => {
+            window.confirm("수정완료!")
         }
     }
     
@@ -56,7 +77,9 @@ class Client extends Component{
                         <Route path="/about" component={About} />
                     </Switch>
                     <Route path="/posts" component={Posts}/>
-                    <Route path="/NoticeBoard" component={NoticeBoard} />
+                    <Route path="/NoticeBoard" render={props=> <NoticeBoard user_id={this.state.user_id}/>}/>
+                    <Route path="/NoticeBoardEdit" render={props=> <NoticeBoardEdit onBoardEdit={this.handleBoardEdit}/>}/>
+                    <Route path="/NoticeBoardRegist" render={props=> <NoticeBoardRegist user_id={this.state.user_id} onBoardRegist={this.handleBoardRegist}/>}/>
                 </div>
             );
         }
