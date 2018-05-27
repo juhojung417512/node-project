@@ -37,12 +37,7 @@ class NoticeBoard extends Component{
                                 <h3>내용 : {row.posts}</h3>
                                 <h3>등록 날짜 : {row.date}</h3>
                                 <button>
-                                <Link to={{pathname:"/NoticeBoardEdit", state:{
-                                    title: row.title,
-                                    posts: row.posts,
-                                    date: row.date,
-                                    id: row.id,
-                                    isEdit: true}}}>수정하기</Link> </button>
+                                <Link to="/NoticeBoardRegist/{row.id}">수정하기</Link> </button>
                             </li>
                         );
                     } else {

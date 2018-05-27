@@ -16,6 +16,21 @@ class NoticeBoardEdit extends Component{
                 [e.target.name] : e.target.value
             });
         }
+        this.board_info = async()=> {
+            let res = await ajax("/api/board-info",{_id: this.props.match.params.boardId});
+            if(res.result !== false){
+                this.setState({
+                    id: res.result.id,
+                    title: res.result.title,
+                    posts: res.result.posts
+                });
+            } else {
+                this.setState({
+                    alert: true,
+                    alert_msg: res.msg
+                })
+            }
+        }
         this.board_edit = async ()=> {
             let res = await ajax("/api/board-edit",
                 {id:this.state.id, title: this.state.title,posts: this.state.posts});
@@ -27,16 +42,14 @@ class NoticeBoardEdit extends Component{
                     alert_msg : res.msg
                 });
         }
-        console.log(this.props);
-        this.setState({
-            id: this.props.location.state.id,
-            title: this.props.location.state.title,
-            posts: this.props.location.state.posts,
-        })
     }
-
+    
+    componentWillMount() {
+        console.log(this.props.match.params.boardId);
+        this.board_info();
+    }
+    
     render(){
-        
         var alertDiv=(
                 <div>
                 </div>

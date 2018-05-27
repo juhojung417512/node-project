@@ -63,7 +63,7 @@ API("/api/board-list",async function(req,res){
         res.send({result:false,msg:err});    
 });
 
-API("/api/board-edit-info", async function(req,res){
+API("/api/board-info", async function(req,res){
     let rows = await queryFunc.noticeboardSelect(req.body._id)
     if(rows !== Error){
         res.send({result:rows[0]})

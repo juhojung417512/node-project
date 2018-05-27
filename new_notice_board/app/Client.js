@@ -78,7 +78,7 @@ class Client extends Component{
                     </Switch>
                     <Route path="/posts" component={Posts}/>
                     <Route path="/NoticeBoard" render={props=> <NoticeBoard user_id={this.state.user_id}/>}/>
-                    <Route path="/NoticeBoardEdit" render={props=> <NoticeBoardEdit onBoardEdit={this.handleBoardEdit}/>}/>
+                    <Route path="/NoticeBoardEdit/:boardId" render={props=> <NoticeBoardEdit onBoardEdit={this.handleBoardEdit}/>}/>
                     <Route path="/NoticeBoardRegist" render={props=> <NoticeBoardRegist user_id={this.state.user_id} onBoardRegist={this.handleBoardRegist}/>}/>
                 </div>
             );
