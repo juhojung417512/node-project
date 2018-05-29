@@ -6,6 +6,7 @@ class NoticeBoard extends Component{
     constructor(props){
         super(props);
         this.state = {
+            user_id : "",
             board_list : []
         }
         this.board_list_get = async() => {
@@ -22,6 +23,9 @@ class NoticeBoard extends Component{
         }
     }
     componentWillMount() {
+        this.setState({
+            user_id : window.sessionStorage.getItem("user_id")
+        })
         this.board_list_get();
     }
     render(){
@@ -30,14 +34,14 @@ class NoticeBoard extends Component{
                 <h2>게시판 입니다!</h2>
                 <ul>
                 {this.state.board_list.map((row)=>{
-                    if(this.props.user_id == row.owner){
+                    if(this.state.user_id == row.owner){
                         return(
                             <li>
                                 <h2>제목 : {row.title}</h2>
                                 <h3>내용 : {row.posts}</h3>
                                 <h3>등록 날짜 : {row.date}</h3>
                                 <button>
-                                <Link to="/NoticeBoardRegist/{row.id}">수정하기</Link> </button>
+                                <Link to={`/NoticeBoardEdit?id=${row.id}`}>수정하기</Link> </button>
                             </li>
                         );
                     } else {
@@ -55,11 +59,6 @@ class NoticeBoard extends Component{
             </div>
         )
     }
-}
-
-
-NoticeBoard.defaultProps= {
-    user_id : ""
 }
 
 export default NoticeBoard;

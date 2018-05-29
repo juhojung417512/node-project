@@ -19,8 +19,10 @@ class NoticeBoardRegist extends Component{
             const {onBoardRegist} = this.props;
             let res = await ajax("/api/board-regist",
                 {user_id: this.props.user_id,title: this.state.title,posts: this.state.posts});
-            if(res.result !== false)
+            if(res.result !== false){
                 onBoardRegist();
+                window.location="/NoticeBoard";
+            }
             else
                 this.setState({
                     alert : true,
@@ -52,7 +54,7 @@ class NoticeBoardRegist extends Component{
                 <h2>제목 : <input type="text" onChange={this.handleChange} name="title" class="form-control" /></h2>
                 <h2>글 내용</h2>
                 <textarea name="posts" class="form-control" onChange={this.handleChange}></textarea>
-                <button><Link to="/" onClick={this.board_regist}> 완료 </Link></button>
+                <button onClick={this.board_regist}> 완료 </button>
             </div>
         )
     }

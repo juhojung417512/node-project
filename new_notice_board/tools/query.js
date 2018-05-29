@@ -91,11 +91,11 @@ var noticeboardEdit = async function(id,title,posts){
         update
         notice_board
         set
-        title="${title}"
-        posts="${posts}"
+        title="${title}",
+        posts="${posts}",
         date="${date}"
         where
-        id="${id}"
+        id=${id}
     `)
 };
 

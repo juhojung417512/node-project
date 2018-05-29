@@ -38,6 +38,7 @@ class Signup extends Component{
                     name : this.state.name,
                     pw: this.state.pw
                 });
+                window.location="/";
             }
         }
     }

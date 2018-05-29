@@ -17,7 +17,9 @@ class NoticeBoardEdit extends Component{
             });
         }
         this.board_info = async()=> {
-            let res = await ajax("/api/board-info",{_id: this.props.match.params.boardId});
+            const query = new URLSearchParams(location.search);
+            let boardId = query.get("id");
+            let res = await ajax("/api/board-info",{_id: boardId});
             if(res.result !== false){
                 this.setState({
                     id: res.result.id,
@@ -32,10 +34,14 @@ class NoticeBoardEdit extends Component{
             }
         }
         this.board_edit = async ()=> {
+            const {onBoardEdit} = this.props;
             let res = await ajax("/api/board-edit",
                 {id:this.state.id, title: this.state.title,posts: this.state.posts});
-            if(res.result !== false)
+            console.log(res);
+            if(res.result !== false){
                 onBoardEdit();
+                window.location="/NoticeBoard";
+            }
             else 
                 this.setState({
                     alert : true,
@@ -45,7 +51,6 @@ class NoticeBoardEdit extends Component{
     }
     
     componentWillMount() {
-        console.log(this.props.match.params.boardId);
         this.board_info();
     }
     
@@ -65,16 +70,24 @@ class NoticeBoardEdit extends Component{
                 alert: false
             });
         }
-        return (
-            <div>
-                <div>{alertDiv}</div>
-                <h1>게시판 글 수정</h1>
-                <h2>제목 : <input type="text" onChange={this.handleChange} value={this.props.location.state.title} name="title" class="form-control" /></h2>
-                <h2>글 내용</h2>
-                <textarea name="posts" class="form-control" onChange={this.handleChange}>{this.props.location.state.posts}</textarea>
-                <button><Link to="/" onClick={this.board_edit}> 완료 </Link></button>
-            </div>
-        )
+        if(this.state.id != 0){
+            return (
+                <div>
+                    <div>{alertDiv}</div>
+                    <h1>게시판 글 수정</h1>
+                    <h2>제목 : <input type="text" onChange={this.handleChange} value={this.state.title} name="title" class="form-control" /></h2>
+                    <h2>글 내용</h2>
+                    <textarea name="posts" class="form-control" onChange={this.handleChange}>{this.state.posts}</textarea>
+                    <button onClick={this.board_edit}> 완료 </button>
+                </div>
+            )
+        } else {
+            return(
+                <div>
+                    <h1>Wait....</h1>
+                </div>
+            )
+        }
     }
 }
 

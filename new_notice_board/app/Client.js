@@ -30,10 +30,7 @@ class Client extends Component{
             window.sessionStorage.setItem("user_id",data.user_id);
             window.sessionStorage.setItem("name",data.name);
             window.sessionStorage.setItem("pw",data.pw);
-        }
-        
-        this.handleLogout = () => {
-            window.sessionStorage.clear();
+            window.confirm("성공!");
         }
 
         this.userSearch = async () => {
@@ -60,6 +57,14 @@ class Client extends Component{
     }
     
     componentWillMount() {
+        if(window.sessionStorage.getItem("user_id") !== null){
+            this.setState({
+                isLogin : true,
+                user_id : window.sessionStorage.getItem("user_id"),
+                name : window.sessionStorage.getItem("name"),
+                pw: window.sessionStorage.getItem("pw")
+            });
+        }
         this.userSearch();
     }
     
@@ -77,8 +82,8 @@ class Client extends Component{
                         <Route path="/about" component={About} />
                     </Switch>
                     <Route path="/posts" component={Posts}/>
-                    <Route path="/NoticeBoard" render={props=> <NoticeBoard user_id={this.state.user_id}/>}/>
-                    <Route path="/NoticeBoardEdit/:boardId" render={props=> <NoticeBoardEdit onBoardEdit={this.handleBoardEdit}/>}/>
+                    <Route path="/NoticeBoard" component={NoticeBoard} />
+                    <Route path="/NoticeBoardEdit" render={props=> <NoticeBoardEdit onBoardEdit={this.handleBoardEdit}/>}/>
                     <Route path="/NoticeBoardRegist" render={props=> <NoticeBoardRegist user_id={this.state.user_id} onBoardRegist={this.handleBoardRegist}/>}/>
                 </div>
             );

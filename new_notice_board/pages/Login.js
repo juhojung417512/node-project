@@ -36,6 +36,7 @@ class Login extends Component{
                     name : res.result.name,
                     pw: res.result.pw
                 });
+                window.location="/";
             }            
         }
     }
@@ -74,7 +75,7 @@ class Login extends Component{
                     placeholder="PW"
                     onChange={this.handleChange}
                 />
-                <button><Link to="/" onClick={this.handleLogin}> 로그인 </Link></button>
+                <button onClick={this.handleLogin}> 로그인 </button>
             </div>
         );
     }    
