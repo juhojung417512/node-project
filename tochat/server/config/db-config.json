@@ -1,0 +1,8 @@
+{
+    "host": "54.250.2.129",
+    "user": "root",
+    "password": "ubuntu",
+    "port": 3306,
+    "database": "ToToChat",
+    "datestrings": "date"
+}

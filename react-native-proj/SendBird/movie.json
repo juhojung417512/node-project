@@ -1,0 +1,18 @@
+{
+    "movies": [{
+    "title":"title", 
+    "year":"2018", 
+    "posters":{"thumbnail":"http://i.imgur.com/UePbdph.jpg"}
+    },
+    {
+        "title":"title", 
+        "year":"2018", 
+        "posters":{"thumbnail":"http://i.imgur.com/UePbdph.jpg"}
+    },
+    {
+        "title":"title", 
+        "year":"2018", 
+        "posters":{"thumbnail":"http://i.imgur.com/UePbdph.jpg"}
+    }
+    ]
+}
