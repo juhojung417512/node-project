@@ -20,7 +20,7 @@ function API(uri, func) {
 API("/api/user-search", async function (req, res) {
     if (req.body.user_id) {
         let rows = await queryFunc.login(req.body.user_id, req.body.pw);
-        if (rows.length >= 1 && rows[0].pw === pw) {
+        if (rows.length >= 1 && rows[0].password === pw) {
             res.send({ result: rows[0] });
         } else {
             res.send({ result: false, msg: "세션이 만료되었습니다." });
@@ -53,28 +53,44 @@ API("/api/signup", async function (req, res) {
     }
 });
 
-API("/api/board-list", async function (req, res) {
-    let rows = await queryFunc.noticeboardList();
-    if (rows !== Error) res.send({ result: rows });else res.send({ result: false, msg: err });
-});
-
-API("/api/board-info", async function (req, res) {
-    let rows = await queryFunc.noticeboardSelect(req.body._id);
-    if (rows !== Error) {
-        res.send({ result: rows[0] });
+API("/api/room-list", async function (req, res) {
+    let rows = await queryFunc.roomList();
+    console.log(rows);
+    if (rows.length !== 0) {
+        res.send({ result: rows });
     } else {
-        res.send({ result: false, msg: "해당하는 게시물이 없습니다." });
+        res.send({ result: false, msg: "error" });
     }
 });
 
-API("/api/board-regist", async function (req, res) {
-    let rows = await queryFunc.noticeboardRegist(req.body.title, req.body.posts, req.body.user_id);
-    if (rows !== Error) res.send({ result: rows[0], msg: "등록하였습니다." });else res.send({ result: false, msg: err });
+API("/api/room-create", async function (req, res) {
+    await queryFunc.roomCreate(rea.body.user_name, req.body.room_name);
+    let room = await queryFunc.roomSelect(rea.body.room_name);
+    if (room.length !== 0) {
+        await queryFunc.chatCreate(room[0].id, room[0].name);
+        res.send({ result: true });
+    } else {
+        res.send({ result: false, msg: "error" });
+    }
 });
 
-API("/api/board-edit", async function (req, res) {
-    let rows = await queryFunc.noticeboardEdit(req.body.id, req.body.title, req.body.posts);
-    if (rows !== Error) res.send({ result: rows[0], msg: "수정하였습니다." });else res.send({ result: false, msg: err });
+API("/api/into-chat", async function (req, res) {
+    let row = await queryFunc.chatSelect(req.body.id);
+    if (row.length !== 0) {
+        res.send({ result: row[0] });
+    } else {
+        res.send({ result: false, msg: "사라진 채팅방입니다." });
+    }
+});
+
+API("/api/chat-update", async function (req, res) {
+    await queryFunc.chatUpdate(req.body.id, req.body.contents);
+    res.send({ result: true });
+});
+
+API("/api/room-delete", async function (req, res) {
+    await queryFunc.chatDelete(req.body.chat_id);
+    await queryFunc.roomDelete(req.body.room_id);
 });
 
 module.exports = router;

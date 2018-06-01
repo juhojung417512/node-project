@@ -57,6 +57,7 @@ API("/api/signup",async function(req,res){
 
 API("/api/room-list",async function(req,res){
     let rows = await queryFunc.roomList();
+    console.log(rows);
     if(rows.length !== 0){
         res.send({result:rows});
     } else {

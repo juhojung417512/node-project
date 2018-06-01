@@ -17,7 +17,7 @@ class Menu extends Component{
                 <div>
                     <ul>
                         <li><NavLink exact activeStyle={activeStyle} to="/">홈</NavLink></li>
-                        <li><NavLink exact activeStyle={activeStyle} to="/Room">채팅방</NavLink></li>
+                        <li><NavLink exact activeStyle={activeStyle} to="/room-list">채팅방</NavLink></li>
                     </ul>
                     <button onClick={this.handleLogout}> 로그아웃 </button>
                     <hr/>

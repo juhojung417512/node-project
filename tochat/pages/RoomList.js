@@ -10,8 +10,9 @@ class RoomList extends Component{
             room_list : []
         }
         this.room_list_get = async () => {
-            let res = ajax("/api/room-list");
-            if(res.result !== false){
+            let res = await ajax("/api/room-list");
+            if(res.result !== null && res.result !== false){
+                console.log(res.result);
                 this.setState({
                     room_list : res.result
                 })
@@ -26,14 +27,14 @@ class RoomList extends Component{
     }
     render(){
         const h2style= {
-            borderBottomColor: black
+            borderBottomColor: 'black'
         }
-        if(this.state.room_list.length !== 0){
+        if(this.state.room_list[0]){
             return(
                 <div>
                     <h2 style={h2style}>채팅방 목록</h2>
                     <ul>
-                    {this.state.board_list.map((row)=>{
+                    {this.state.room_list.map((row)=>{
                         return (
                             <li>
                                 <h2>{row.name}</h2>
