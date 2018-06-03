@@ -37,6 +37,8 @@ class Chat extends Component{
                 chatLogs.push((<div class='you'>{data.msg} from : <strong> {data.from.name} </strong></div>));
             }
         })
+
+        //socekt.emit 추가해야함
         return(
             <div>
                 {this.state.chatLogs}
