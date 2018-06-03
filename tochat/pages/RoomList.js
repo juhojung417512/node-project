@@ -34,7 +34,7 @@ class RoomList extends Component{
                 window.alert(res.msg);
             }
 
-            let res = await ajax("/api/room-list/open");
+            res = await ajax("/api/room-list/open");
             if(res.result !== null && res.result !== false){
                 console.log(res.result);
                 this.setState({
@@ -90,31 +90,18 @@ class RoomList extends Component{
                 </li>
             );
         });
-        window.sessionStorage.setItem("room_list",room_list);
-        if(this.room_list_div.length !== 2){
-            //중복처리 해야함
-            return(
-                <div>
-                    <h2 style={h2style}>채팅방 목록</h2>
-                    <ul>
-                        {this.room_list_div}
-                    </ul>
-                    <input name="room_name" onChange={this.handleChange} placeholder="Room Name Insert!"/>
-                    체크시 오픈방<input type="checkbox" onChange={this.handleCheckBox} />
-                    <button onClick={this.room_create}> 채팅방 생성 </button>
-                </div>
-            );
-        } else {
-            return(
-                <div>
-                    <h2 style={h2style}>채팅방 목록</h2>
-                    <h3>방이 없습니다.</h3>
-                    <input name="room_name" onChange={this.handleChange} placeholder="Room Name Insert!"/>
-                    체크시 오픈방<input type="checkbox" onChange={this.handleCheckBox} />
-                    <button onClick={this.room_create}> 채팅방 생성 </button>
-                </div>
-            )
-        }
+        window.sessionStorage.setItem("room_list",room_list);//중복처리 해야함
+        return(
+            <div>
+                <h2 style={h2style}>채팅방 목록</h2>
+                <ul>
+                    {this.room_list_div}
+                </ul>
+                <input name="room_name" onChange={this.handleChange} placeholder="Room Name Insert!"/>
+                체크시 오픈방<input type="checkbox" onChange={this.handleCheckBox} />
+                <button onClick={this.room_create}> 채팅방 생성 </button>
+            </div>
+        );
         
     }
 }

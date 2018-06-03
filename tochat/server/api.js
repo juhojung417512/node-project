@@ -33,7 +33,7 @@ API("/api/user-search", async function (req, res) {
 API("/api/login", async function (req, res) {
     let rows = await queryFunc.login(req.body._id, req.body._pw);
     if (rows.length === 0) {
-        res.send({ result: false, msg: "해당 유저가 없습니다." });
+        res.send({result:false, msg:"아이디 혹은 비밀번호가 올바르지 않습니다."});  
     } else {
         res.send({ result: rows[0] });
     }

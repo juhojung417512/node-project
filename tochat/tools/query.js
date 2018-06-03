@@ -186,7 +186,6 @@ module.exports = {
     roomCreate: roomCreate,
     roomSelect: roomSelect,
     chatCreate: chatCreate,
-    chatUpdate: chatUpdate,
     chatSelectByUserId: chatSelectByUserId,
     chatSelectByRoomId: chatSelectByRoomId,
     roomDelete: roomDelete,

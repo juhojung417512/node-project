@@ -33,7 +33,7 @@ API("/api/user-search", async function (req, res) {
 API("/api/login", async function (req, res) {
     let rows = await queryFunc.login(req.body._id, req.body._pw);
     if (rows.length === 0) {
-        res.send({ result: false, msg: "해당 유저가 없습니다." });
+        res.send({ result: false, msg: "아이디 혹은 비밀번호가 올바르지 않습니다." });
     } else {
         res.send({ result: rows[0] });
     }
@@ -55,9 +55,9 @@ API("/api/signup", async function (req, res) {
 
 API("/api/room-list/mine", async function (req, res) {
     let rows = await queryFunc.chatSelectByUserId(req.body.user_id);
-    if(rows.length !== 0){
+    if (rows.length !== 0) {
         let room_name = [];
-        for(var i = 0;i<rows.length;i++){
+        for (var i = 0; i < rows.length; i++) {
             room_name.push(rows[i].room_name);
         }
         let rows = await queryFunc.roomListByName(room_name);
@@ -90,20 +90,19 @@ API("/api/room-create", async function (req, res) {
 });
 
 API("/api/into-chat", async function (req, res) {
-    if(req.body.isFirst){
-        await queryFunc.chatCreate(req.body.user_id,req.body.room_name,"Enter");
+    if (req.body.isFirst) {
+        await queryFunc.chatCreate(req.body.user_id, req.body.room_name, "Enter");
     }
     let rows = await queryFunc.chatSelectByRoomId(req.body.room_name);
-    if(rows.length !== 0){
-        res.send({result: rows});
+    if (rows.length !== 0) {
+        res.send({ result: rows });
     } else {
         res.send({ result: false, msg: "이전 대화내용이 없습니다." });
     }
-    
 });
 
 API("/api/chat-insert", async function (req, res) {
-    let rows = await queryFunc.chatCreate(req.body.user_id,req.body.room_name,req.body.history);
+    let rows = await queryFunc.chatCreate(req.body.user_id, req.body.room_name, req.body.history);
     if (rows.length !== 0) {
         res.send({ result: true });
     } else {

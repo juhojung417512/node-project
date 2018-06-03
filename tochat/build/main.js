@@ -35,6 +35,11 @@ var io = require("socket.io")(server);
 var room_list = [];
 // room system
 io.on('connection', socket => {
+    socket.on("login", function (data) {
+        console.log('Client logged-in:\n name:' + data.username + '\n userid: ' + data.userid);
+        socket.username = data.username;
+        socket.userid = data.userid;
+    });
     socket.on("chat", function (data) {
         socket.userid = data.userid;
         socket.username = data.username;

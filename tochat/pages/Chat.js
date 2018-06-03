@@ -37,7 +37,7 @@ class Chat extends Component{
                 window.alert(res.msg);
             }
         }
-        this.sendMessage = () => {
+        this.sendMessage = async () => {
             let res = await ajax("/api/chat-insert",{
                 user_id : this.state.user_id,
                 room_name : this.state.room_name,
