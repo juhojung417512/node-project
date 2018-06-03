@@ -64,39 +64,40 @@ class RoomList extends Component{
     }
     render(){
         const h2style= {
-            borderBottomColor: 'black'
+            borderBottomColor: 'black',
+            
         }
-        let room_list_div = [(<li> 나의 채팅방 </li>)]; // 표시될 채팅방 div
+        let room_list_div = [(<h2> 나의 채팅방 <hr/></h2>)]; // 표시될 채팅방 div
         let room_list = [] // 채팅방 이름 리스트 
         this.state.room_list_mine.map((row)=>{
             room_list.push(row.name);
             room_list_div.push(
                 <li>
-                    <h2>{row.name}</h2>
-                    <button><Link to={`/chat?name=${row.name}`}>채팅방 입장</Link></button>
+                    <h3>{row.name} <button><Link to={`/chat?name=${row.name}`}>채팅방 입장</Link></button></h3>
                 </li>
             );
         });
-        room_list_div.push(<li> 오픈 채팅방 </li>)
+        room_list_div.push(<h2> 오픈 채팅방 <hr/></h2>)
         this.state.room_list_open.map((row)=>{
             room_list.push(row.name);
             room_list_div.push(
                 <li>
-                    <h2>{row.name}</h2>
-                    <button><Link to={`/chat?name=${row.name}`}>채팅방 입장</Link></button>
+                    <h3>{row.name} <button><Link to={`/chat?name=${row.name}`}>채팅방 입장</Link></button></h3>
                 </li>
             );
         });
         window.sessionStorage.setItem("room_list",room_list);//중복처리 해야함
         return(
             <div>
-                <h2 style={h2style}>채팅방 목록</h2>
+                <h2>채팅방 생성</h2>
+                <input name="room_name" onChange={this.handleChange} placeholder="Room Name Insert!"/>
+                 체크시 오픈방 <input type="checkbox" onChange={this.handleCheckBox} />
+                <button onClick={this.room_create}> 생성 </button>
+                <h2 style={h2style}>채팅방 목록</h2><hr/>
                 <ul>
                     {room_list_div}
                 </ul>
-                <input name="room_name" onChange={this.handleChange} placeholder="Room Name Insert!"/>
-                체크시 오픈방<input type="checkbox" onChange={this.handleCheckBox} />
-                <button onClick={this.room_create}> 채팅방 생성 </button>
+                
             </div>
         );
         

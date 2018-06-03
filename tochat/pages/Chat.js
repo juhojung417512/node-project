@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import {ajax} from '../tools/utils';
 import socketIOClient from 'socket.io-client';
 //userid username roomid
+// 채팅기록 불러오기
 class Chat extends Component{
     constructor(props){
         super(props);
@@ -44,6 +45,7 @@ class Chat extends Component{
                 history: this.state.message
             })
             if(res.result !== false){
+                let socket = socketIOClient(this.state.endpoint);
                 socket.emit("chat", {
                     msg: this.state.message,
                     userid: this.state.user_id,
