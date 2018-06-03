@@ -31,7 +31,7 @@ class RoomList extends Component{
             });
             if(res.result !== false){
                 window.confirm("방 생성 완료!");
-                window.location = "/chat"; /// 여기 다시 봐야하
+                window.location = "/chat";
             } else {
                 window.confirm("방을 생성할 수 없습니다.");
             }
