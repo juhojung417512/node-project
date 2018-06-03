@@ -33,7 +33,7 @@ API("/api/user-search", async function (req, res) {
 API("/api/login", async function (req, res) {
     let rows = await queryFunc.login(req.body._id, req.body._pw);
     if (rows.length === 0) {
-        res.send({result:false, msg:"아이디 혹은 비밀번호가 올바르지 않습니다."});  
+        res.send({result:false, msg:"아이디 혹은 비밀번호가 올바르지 않습니다."});
     } else {
         res.send({ result: rows[0] });
     }
@@ -58,25 +58,23 @@ API("/api/room-list/mine", async function (req, res) {
     if(rows.length !== 0){
         let room_name = [];
         for(var i = 0;i<rows.length;i++){
-            room_name.push(rows[i].room_name);
+            room_name.push("\""+rows[i].room_name+"\"");
         }
-        let rows = await queryFunc.roomListByName(room_name);
-        console.log(rows);
-        if (rows.length !== 0) {
-            res.send({ result: rows });
+        let rooms = await queryFunc.roomListByName(room_name);
+        if (rooms.length !== 0) {
+            res.send({ result: rooms });
         } else {
-            res.send({ result: false, msg: "채팅방이 없습니다." });
+            res.send({ result: []});
         }
     }
 });
 
 API("/api/room-list/open", async function (req, res) {
-    let rows = await queryFunc.roomList();
-    console.log(rows);
+    let rows = await queryFunc.roomList(req.body.user_id);
     if (rows.length !== 0) {
         res.send({ result: rows });
     } else {
-        res.send({ result: false, msg: "error" });
+        res.send({ result: []});
     }
 });
 

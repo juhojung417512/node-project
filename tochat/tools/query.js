@@ -53,7 +53,7 @@ var signup = function(id,pw,name){
     `);
 };
 
-var roomList = function(){
+var roomList = function(user_id){
     return _query(`
         select
         *
@@ -61,6 +61,9 @@ var roomList = function(){
         room_list
         where
         isOpen = 1
+        and
+        name not in
+        (select room_name from chat_history where user_id = "${user_id}")
     `)
 }
 
@@ -71,7 +74,7 @@ var roomListByName = function(name){
         from
         room_list
         where
-        name in "${name}"
+        name in (${name})
     `)
 }
 
@@ -141,7 +144,7 @@ var chatSelectByUserId = function(userId){
         from
         chat_history
         where
-        userId=${userId}
+        user_id="${userId}"
         group by user_id, room_name
     `)
 }

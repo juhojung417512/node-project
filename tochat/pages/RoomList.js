@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import {Link} from 'react-router-dom';
 import {ajax} from '../tools/utils';
-
+// room list session storage 저장해줘야함. indexing 도 해야함 
 class RoomList extends Component{
     constructor(props){
         super(props);
@@ -22,21 +22,21 @@ class RoomList extends Component{
             })
         }
         this.room_list_get = async () => {
-            let res = await ajax("/api/room-list/mine", this.state.user_id);
-            if(res.result !== null && res.result !== false){
-                console.log(res.result);
+            let res = await ajax("/api/room-list/mine", {
+                user_id:this.props.user_id
+            });
+            if(res.result !== false){
                 this.setState({
                     room_list_mine : res.result
                 });
                 
-                // session storage 저장해줘야함. indexing 도 해야함 
             } else{
                 window.alert(res.msg);
             }
-
-            res = await ajax("/api/room-list/open");
-            if(res.result !== null && res.result !== false){
-                console.log(res.result);
+            res = await ajax("/api/room-list/open",{
+                user_id: this.props.user_id
+            });
+            if(res.result !== false){
                 this.setState({
                     room_list_open : res.result
                 })
@@ -60,9 +60,6 @@ class RoomList extends Component{
         }
     }
     componentWillMount() {
-        this.setState({
-            user_id : window.sessionStorage.getItem("user_id")
-        })
         this.room_list_get();
     }
     render(){
@@ -95,7 +92,7 @@ class RoomList extends Component{
             <div>
                 <h2 style={h2style}>채팅방 목록</h2>
                 <ul>
-                    {this.room_list_div}
+                    {room_list_div}
                 </ul>
                 <input name="room_name" onChange={this.handleChange} placeholder="Room Name Insert!"/>
                 체크시 오픈방<input type="checkbox" onChange={this.handleCheckBox} />

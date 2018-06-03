@@ -58,12 +58,11 @@ API("/api/room-list/mine", async function (req, res) {
     if (rows.length !== 0) {
         let room_name = [];
         for (var i = 0; i < rows.length; i++) {
-            room_name.push(rows[i].room_name);
+            room_name.push("\"" + rows[i].room_name + "\"");
         }
-        let rows = await queryFunc.roomListByName(room_name);
-        console.log(rows);
-        if (rows.length !== 0) {
-            res.send({ result: rows });
+        let rooms = await queryFunc.roomListByName(room_name);
+        if (rooms.length !== 0) {
+            res.send({ result: rooms });
         } else {
             res.send({ result: false, msg: "채팅방이 없습니다." });
         }
@@ -71,8 +70,7 @@ API("/api/room-list/mine", async function (req, res) {
 });
 
 API("/api/room-list/open", async function (req, res) {
-    let rows = await queryFunc.roomList();
-    console.log(rows);
+    let rows = await queryFunc.roomList(req.body.user_id);
     if (rows.length !== 0) {
         res.send({ result: rows });
     } else {
