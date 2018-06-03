@@ -76,8 +76,8 @@ class Client extends Component{
                     <h2>Name : {this.state.name}</h2>
                     <Menu isLogin={this.state.isLogin}/>
                     <Route exact path="/" component={Home} />
-                    <Route path="/room-list" render={props=> <RoomList user_name={this.state.name} />} />
-                    <Route path="/chat" render={props=> <Chat user_name={this.state.name} />} />
+                    <Route path="/room-list" render={props=> <RoomList user_id={this.state.user_id} />} />
+                    <Route path="/chat" component={Chat} />
                     <Route path="/NoticeBoardEdit" render={props=> <NoticeBoardEdit onBoardEdit={this.handleBoardEdit}/>}/>
                     <Route path="/NoticeBoardRegist" render={props=> <NoticeBoardRegist user_id={this.state.user_id} onBoardRegist={this.handleBoardRegist}/>}/>
                 </div>
