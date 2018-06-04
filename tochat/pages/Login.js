@@ -68,12 +68,12 @@ class Login extends Component{
                 <input 
                     name="user_id"
                     placeholder="ID"
-                    onChange={this.handleChange}
+                    ref="user_id"
                 />
                 <input
                     name="pw"
                     placeholder="PW"
-                    onChange={this.handleChange}
+                    ref="pw"
                 />
                 <button onClick={this.handleLogin}> 로그인 </button>
             </div>

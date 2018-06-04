@@ -5,10 +5,8 @@ import Login from '../pages/Login';
 import Signup from '../pages/Signup';
 import RoomList from '../pages/RoomList';
 import Chat from '../pages/Chat';
-import NoticeBoardEdit from '../pages/NoticeBoardEdit';
-import NoticeBoardRegist from '../pages/NoticeBoardRegist';
 import Menu from '../components/Menu';
-import {ajax} from "../tools/utils"
+import ComponentManager from "./ComponentManager";
 
 class Client extends Component{
     constructor(props){
@@ -16,9 +14,10 @@ class Client extends Component{
         this.state={
             isLogin : false,
             user_id : 0,
-            name: 0
+            name: 0,
+            pw: 0
         }
-        
+        const comManager = ComponentManager;
         this.handleLogin = (data) => {
             this.setState({
                 isLogin : true,
@@ -78,8 +77,6 @@ class Client extends Component{
                     <Route exact path="/" component={Home} />
                     <Route path="/room-list" render={props=> <RoomList user_id={this.state.user_id} />} />
                     <Route path="/chat" component={Chat} />
-                    <Route path="/NoticeBoardEdit" render={props=> <NoticeBoardEdit onBoardEdit={this.handleBoardEdit}/>}/>
-                    <Route path="/NoticeBoardRegist" render={props=> <NoticeBoardRegist user_id={this.state.user_id} onBoardRegist={this.handleBoardRegist}/>}/>
                 </div>
             );
         }

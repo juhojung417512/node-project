@@ -86,7 +86,7 @@ class RoomList extends Component{
                 </li>
             );
         });
-        window.sessionStorage.setItem("room_list",room_list);//중복처리 해야함
+        window.sessionStorage.setItem("room_list",room_list);
         return(
             <div>
                 <h2>채팅방 생성</h2>

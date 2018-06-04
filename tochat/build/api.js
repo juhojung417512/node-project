@@ -64,7 +64,7 @@ API("/api/room-list/mine", async function (req, res) {
         if (rooms.length !== 0) {
             res.send({ result: rooms });
         } else {
-            res.send({ result: false, msg: "채팅방이 없습니다." });
+            res.send({ result: [] });
         }
     }
 });
@@ -74,7 +74,7 @@ API("/api/room-list/open", async function (req, res) {
     if (rows.length !== 0) {
         res.send({ result: rows });
     } else {
-        res.send({ result: false, msg: "error" });
+        res.send({ result: [] });
     }
 });
 
@@ -89,9 +89,9 @@ API("/api/room-create", async function (req, res) {
 
 API("/api/into-chat", async function (req, res) {
     if (req.body.isFirst) {
-        await queryFunc.chatCreate(req.body.user_id, req.body.room_name, "Enter");
+        await queryFunc.chatCreate(req.body.user_id, req.body.user_name, req.body.room_name, "Enter");
     }
-    let rows = await queryFunc.chatSelectByRoomId(req.body.room_name);
+    let rows = await queryFunc.chatSelectByRoomName(req.body.room_name);
     if (rows.length !== 0) {
         res.send({ result: rows });
     } else {
@@ -100,7 +100,7 @@ API("/api/into-chat", async function (req, res) {
 });
 
 API("/api/chat-insert", async function (req, res) {
-    let rows = await queryFunc.chatCreate(req.body.user_id, req.body.room_name, req.body.history);
+    let rows = await queryFunc.chatCreate(req.body.user_id, req.body.user_name, req.body.room_name, req.body.history);
     if (rows.length !== 0) {
         res.send({ result: true });
     } else {

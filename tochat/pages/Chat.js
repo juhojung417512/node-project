@@ -13,7 +13,7 @@ class Chat extends Component{
             room_name: "",
             message: "",
             endpoint: "http://127.0.0.1:3000",
-            chatLogs: [(<div>Chatting!</div>)]
+            chatLogs: [(<div>Chatting!</div>)],
         }
         this.handleChange = (e)=>{ 
             this.setState({
@@ -21,26 +21,48 @@ class Chat extends Component{
             });
         }
         this.onLogin = async () => {
+            let room_list = window.sessionStorage.getItem("room_list");
             let isFirst = true;
-            if(this.room_name in window.sessionStorage.getItem("room_list"))
+            if( room_list.search(this.state.room_name) === 0)
                 isFirst = false;
-            let res = await ajax("/api/into-chat",{
+
+            let rows = await ajax("/api/into-chat",{
                 user_id : this.state.user_id,
+                user_name: this.state.user_name,
                 room_name : this.state.room_name,
                 isFirst : isFirst
             })
-            if(res.result !== false){
+            const socket = socketIOClient(this.state.endpoint);
+            if(rows.result !== false){
+                const user = {
+                    textAlign: 'right'
+                };
+                const otherUser = {
+                    textAlign: 'left'
+                };
                 socket.emit("login",{
                     username: this.state.user_name,
                     userid: this.state.user_id
                 });
+                let chatLogs = this.state.chatLogs;
+                for(var i =0;i<rows.result.length; i++){
+                    chatLogs.push(
+                        <div style={user}>
+                            {rows.result[i].history} from : 
+                            <strong> {rows.result[i].user_name} </strong>
+                        </div>);
+                }
+                this.setState({
+                    chatLogs: chatLogs
+                });
             } else {
-                window.alert(res.msg);
+                window.alert(rows.msg);
             }
         }
         this.sendMessage = async () => {
             let res = await ajax("/api/chat-insert",{
                 user_id : this.state.user_id,
+                user_name: this.state.user_name,
                 room_name : this.state.room_name,
                 history: this.state.message
             })
@@ -52,6 +74,7 @@ class Chat extends Component{
                     username: this.state.user_name,
                     room_id: this.state.room_id
                 });
+                this.refs.message.value = '';
             } else {
                 window.alert(res.msg);
             }
@@ -63,11 +86,11 @@ class Chat extends Component{
         this.setState({
             user_id : window.sessionStorage.getItem("user_id"),
             user_name : window.sessionStorage.getItem("name"),
-            room_name : room_name
+            room_name : room_name,
+            ...this.state
+        } , ()=>{
+            this.onLogin()
         });
-        this.onLogin();
-    }
-    render(){
         const user = {
             textAlign: 'right'
         };
@@ -75,29 +98,45 @@ class Chat extends Component{
             textAlign: 'left'
         };
         let socket = socketIOClient(this.state.endpoint);
-        socket.on("login",function(data){
-            const {chatLogs} = this.state;
-            chatLogs.push((<div><strong>{data}</strong> has joined</div>))
+        let chatLogs = this.state.chatLogs;
+        socket.on("login",(data)=>{
+            chatLogs.push(
+                <div>
+                    <strong>{data}</strong> has joined
+                </div>);
             this.setState({
                 chatLogs: chatLogs
             });
         });
-
-        socket.on("chat",function(data){
-            const {chatLogs} = this.state;
-            const {name} = this.props;
-            if(name == data.from.name){
-                chatLogs.push((<div style={user}>{data.msg} from :<strong> {data.from.name} </strong></div>));
+        let username = this.state.user_name;
+        socket.on("chat",(data)=>{
+            if(username == data.from.name){
+                chatLogs.push(
+                    <div style={user}>
+                        {data.msg} from : 
+                        <strong> {data.from.name} </strong>
+                    </div>);
             }else{
-                chatLogs.push((<div style={otherUser}>{data.msg} from : <strong> {data.from.name} </strong></div>));
+                chatLogs.push(
+                    <div style={otherUser}>
+                        {data.msg} from : 
+                        <strong> {data.from.name} </strong>
+                    </div>);
             }
+            this.setState({
+                chatLogs: chatLogs
+            });
         });
+    }
+    render(){
         return(
             <div>
-                {this.state.chatLogs}
+                <div>
+                    {this.state.chatLogs}
+                </div>
                 <h3>
                     Message : 
-                    <input name="message" onChange={this.handleChange} placeholder="message"/>
+                    <input name="message" ref="message" onChange={this.handleChange} placeholder="message"/>
                     <button onClick={this.sendMessage}> 전송! </button>
                 </h3>
             </div>

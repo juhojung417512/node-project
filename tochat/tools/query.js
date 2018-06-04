@@ -6,6 +6,7 @@ let connection = mysql.createConnection(dbconfig);
 connection.connect();
 
 function _query(sql,args){
+    console.log(sql);
     return new Promise((resolve,reject)=>{
         connection.query(sql,args,function(err,rows){
             if(err)
@@ -115,25 +116,25 @@ var roomDelete = function(room_id,user_id){
     `)
 }
 
-var chatCreate = function(user_id,room_name,history){
+var chatCreate = function(user_id,user_name,room_name,history){
     return _query(`
         insert
         into
         chat_history
-        (user_id,room_name,history)
+        (user_id,user_name,room_name,history)
         values
-        ("${user_id}","${room_name}","${history}")
+        ("${user_id}","${user_name}","${room_name}","${history}")
     `)
 }
 
-var chatSelectByRoomId = function(roomId){
+var chatSelectByRoomName = function(room_name){
     return _query(`
         select
         *
         from
         chat_history
         where
-        room_id=${roomId}
+        room_name="${room_name}"
     `)
 }
 
@@ -190,7 +191,7 @@ module.exports = {
     roomSelect: roomSelect,
     chatCreate: chatCreate,
     chatSelectByUserId: chatSelectByUserId,
-    chatSelectByRoomId: chatSelectByRoomId,
+    chatSelectByRoomName: chatSelectByRoomName,
     roomDelete: roomDelete,
     chatDeleteById: chatDeleteById,
     chatDeleteByRoomId: chatDeleteByRoomId
